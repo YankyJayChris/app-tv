@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "38840380737",
+    "firebase_url": "https://tv1-video.firebaseio.com",
+    "project_id": "tv1-video",
+    "storage_bucket": "tv1-video.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:38840380737:android:ba2a41bd7a1f84695485c0",
+        "android_client_info": {
+          "package_name": "rw.prime.radiotv1.tv1app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "38840380737-fv2i25nt7nh6l77uqjjg5bee5frr78qk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rw.prime.radiotv1.tv1app",
+            "certificate_hash": "fc594b62a58ed3a1e2920a620a0e4d357e4b7a73"
+          }
+        },
+        {
+          "client_id": "38840380737-g1bb2mkl1cbshba7iriqkgj0mngf5vbo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMk2CQY8pHMuMgBdtrIpxrzLuSJ8yUQi4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "38840380737-g1bb2mkl1cbshba7iriqkgj0mngf5vbo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
