@@ -25,6 +25,7 @@ class RowItem extends StatelessWidget {
                   height: 110,
                   width: MediaQuery.of(context).size.width * (35 / 100),
                   decoration: BoxDecoration(
+                    color: Colors.grey,
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(8),
                       topLeft: Radius.circular(8),

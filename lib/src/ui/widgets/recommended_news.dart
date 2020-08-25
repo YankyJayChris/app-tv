@@ -21,6 +21,7 @@ class RecommendedNews extends StatelessWidget {
               width: MediaQuery.of(context).size.width * (50 / 100),
               height: MediaQuery.of(context).size.height * (15 / 100),
               decoration: BoxDecoration(
+                color: Colors.grey,
                 borderRadius: BorderRadius.circular(10.0),
                 image: DecorationImage(
                   fit: BoxFit.cover,

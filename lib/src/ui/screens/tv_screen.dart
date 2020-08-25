@@ -11,7 +11,7 @@ import 'package:newsapp/src/ui/widgets/header_section.dart';
 import 'package:newsapp/src/ui/widgets/LatestVideo.dart';
 import 'package:newsapp/src/ui/widgets/recommended_news.dart';
 
-// import 'package:screen/screen.dart';
+import 'package:screen/screen.dart';
 
 class TvScreen extends StatefulWidget {
   TvScreen({Key key}) : super(key: key);
@@ -45,15 +45,15 @@ class _TvScreenState extends State<TvScreen> {
     player.release();
   }
 
-  // initPlatformState() async {
-  //   Screen.keepOn(_isKeptOn);
-  //   bool keptOn = await Screen.isKeptOn;
-  //   double brightness = await Screen.brightness;
-  //   setState(() {
-  //     _isKeptOn = keptOn;
-  //     _brightness = brightness;
-  //   });
-  // }
+  initPlatformState() async {
+    Screen.keepOn(_isKeptOn);
+    bool keptOn = await Screen.isKeptOn;
+    double brightness = await Screen.brightness;
+    setState(() {
+      _isKeptOn = keptOn;
+      _brightness = brightness;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +87,11 @@ class _TvScreenState extends State<TvScreen> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/radio');
-                  },
+                    player.release();
+                    Navigator.pop(context);
+                  Navigator.pushNamed(context, '/radio');
+
+                 },
                   child: Icon(
                     Icons.radio,
                     color: Colors.black,
@@ -96,7 +99,10 @@ class _TvScreenState extends State<TvScreen> {
                 ),
                 SizedBox(width: 15),
                 GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      
+                      Navigator.pushNamed(context, '/searchpage');
+                    },
                     child: Icon(Icons.search, color: Colors.black)),
                 SizedBox(width: 15),
                 // GestureDetector(
@@ -113,96 +119,90 @@ class _TvScreenState extends State<TvScreen> {
           ],
         ),
         backgroundColor: Colors.white,
-        body: RefreshIndicator(
-        onRefresh: () {
-          return null;
-        },
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: MediaQuery.of(context).size.height * (30 / 100),
-                width: MediaQuery.of(context).size.width,
-                child: SafeArea(
-                  child: FijkView(
-                    player: player,
-                    fit: cover,
-                    fsFit: cover,
-                    height: MediaQuery.of(context).size.height * (30 / 100),
-                    width: MediaQuery.of(context).size.width,
-                  ),
+        body: Column(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * (30 / 100),
+              width: MediaQuery.of(context).size.width,
+              child: SafeArea(
+                child: FijkView(
+                  player: player,
+                  fit: cover,
+                  fsFit: cover,
+                  height: MediaQuery.of(context).size.height * (30 / 100),
+                  width: MediaQuery.of(context).size.width,
                 ),
               ),
-              SizedBox(
-                height: 5.0,
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      HeaderSection(title: "Latest News", route: "news"),
-                      Container(
-                          height:
-                              MediaQuery.of(context).size.height * (30 / 100),
-                          child: BlocBuilder<ArticleBloc, ArticleState>(
-                              builder: (context, state) {
-                            if (state is ArticleFailure) {
+            ),
+            SizedBox(
+              height: 5.0,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    HeaderSection(title: "Latest News", route: "news"),
+                    Container(
+                        height: MediaQuery.of(context).size.height * (30 / 100),
+                        child: BlocBuilder<ArticleBloc, ArticleState>(
+                            builder: (context, state) {
+                          if (state is ArticleFailure) {
+                            return Container(
+                              height: double.infinity,
+                              width: double.infinity,
+                              child: Center(
+                                child: Text('failed to fetch Videos'),
+                              ),
+                            );
+                          }
+                          if (state is ArticleSuccess) {
+                            if (state.articles.isEmpty) {
                               return Container(
                                 height: double.infinity,
                                 width: double.infinity,
                                 child: Center(
-                                  child: Text('failed to fetch Videos'),
+                                  child: Text('no video found'),
                                 ),
                               );
                             }
-                            if (state is ArticleSuccess) {
-                              if (state.articles.isEmpty) {
-                                return Container(
-                                  height: double.infinity,
-                                  width: double.infinity,
-                                  child: Center(
-                                    child: Text('no video found'),
-                                  ),
-                                );
-                              }
-                            }
-                            if (state is ArticleSuccess) {
-                              return buildLatestVideo(state.articles);
-                            }
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          })),
-                      HeaderSection(title: "Latest News", route: " "),
-                      Container(
-                        height: MediaQuery.of(context).size.height * (30 / 100),
-                        child: BlocBuilder<VideoBloc, VideoState>(
-                            builder: (context, state) {
-                          if (state is VideoFailure) {
-                            return Center(
-                              child: Text('failed to fetch Videos'),
-                            );
                           }
-                          if (state is VideoSuccess) {
-                            if (state.latest.isEmpty) {
-                              return Center(
-                                child: Text('no video found'),
-                              );
-                            }
-                          }
-                          if (state is VideoSuccess) {
-                            return LatestVideoWidget(data: state.latest);
+                          if (state is ArticleSuccess) {
+                            return buildLatestVideo(state.articles);
                           }
                           return Center(
                             child: CircularProgressIndicator(),
                           );
-                        }),
-                      ),
-                    ],
-                  ),
+                        })),
+                    HeaderSection(title: "Latest News", route: " "),
+                    Container(
+                      height: MediaQuery.of(context).size.height * (30 / 100),
+                      child: BlocBuilder<VideoBloc, VideoState>(
+                          builder: (context, state) {
+                        if (state is VideoFailure) {
+                          return Center(
+                            child: Text('failed to fetch Videos'),
+                          );
+                        }
+                        if (state is VideoSuccess) {
+                          if (state.latest.isEmpty) {
+                            return Center(
+                              child: Text('no video found'),
+                            );
+                          }
+                        }
+                        if (state is VideoSuccess) {
+                          return LatestVideoWidget(data: state.latest);
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }),
+                    ),
+                  ],
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );

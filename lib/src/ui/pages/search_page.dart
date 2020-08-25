@@ -39,7 +39,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<List<Article>> _getALlPosts(String text) async {
-    var response = await http.get(AppStrings.primeURL + '?type=fetch_articles&keyword=$text');
+    var response = await http
+        .get(AppStrings.primeURL + '?type=fetch_articles&keyword=$text');
     print(json.decode(response.body));
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
@@ -108,9 +109,9 @@ class _SearchPageState extends State<SearchPage> {
     if (_isSearching) {
       return CenterTitle('Searching tv1 news...');
     } else if (_error != null) {
-      return CenterTitle('Nothing found pleasesearch again');
+      return CenterTitle('Nothing found please search again');
     } else if (_searchQuery.text.isEmpty) {
-      return CenterTitle('Begin Search by typing on search bar');
+      return CenterTitle('Search the news');
     } else {
       return ListView.builder(
           padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -158,12 +159,23 @@ class CenterTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
         alignment: Alignment.center,
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.headline,
-          textAlign: TextAlign.center,
+        child: ListView(
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          children: [
+            Center(
+              child: Image.asset(
+                'assets/images/search-icon.png',
+                width: 500,
+                height: 500,
+              ),
+            ),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.headline,
+              textAlign: TextAlign.center,
+            ),
+          ],
         ));
   }
 }

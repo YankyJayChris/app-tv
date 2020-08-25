@@ -8,8 +8,8 @@ class HeaderSection extends StatelessWidget {
   HeaderSection({this.title, this.route});
 
   Widget more() {
-    if (this.route == "") {
-      return null;
+    if (this.route == " ") {
+      return SizedBox();
     } else {
       return InkWell(
         onTap: () {

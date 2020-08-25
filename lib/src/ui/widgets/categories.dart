@@ -14,7 +14,7 @@ class CategoriesWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Container(
-        height: 100.0,
+        height: 110.0,
         child: Row(
           // scrollDirection: Axis.horizontal,
           // // padding: const EdgeInsets.all(8),

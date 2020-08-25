@@ -21,6 +21,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+  VideoBloc _videoBloc;
+  ArticleBloc _articleBloc;
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -28,6 +30,11 @@ class _HomePageState extends State<HomePage> {
       result.add(handler(i, list[i]));
     }
     return result;
+  }
+
+  Future<Null> _refreshPage() async {
+    _videoBloc = BlocProvider.of<VideoBloc>(context);
+    _articleBloc = BlocProvider.of<ArticleBloc>(context);
   }
 
   @override
@@ -47,10 +54,6 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 width: 5.0,
               ),
-              // Text(
-              //   'TV1 PRIME',
-              //   style: TextStyle(color: Colors.black, fontFamily: 'BebasNeue'),
-              // ),
             ],
             mainAxisAlignment: MainAxisAlignment.start,
           ),
@@ -68,7 +71,9 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(width: 15),
                 GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, '/searchpage');
+                    },
                     child: Icon(Icons.search, color: Colors.black)),
                 SizedBox(width: 15),
                 // GestureDetector(
@@ -85,9 +90,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         body: RefreshIndicator(
-          onRefresh: () {
-            return null;
-          },
+          onRefresh: _refreshPage,
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -155,10 +158,9 @@ class _HomePageState extends State<HomePage> {
                     );
                   }).toList(),
                 ),
-                HeaderSection(title: "Category", route: "category"),
+                // HeaderSection(title: "Category", route: "category"),
                 CategoriesWidget(),
                 HeaderSection(title: "Latest News", route: "news"),
-                // LatestVideoWidget(),
                 Container(
                   height: MediaQuery.of(context).size.height * (30 / 100),
                   child: BlocBuilder<ArticleBloc, ArticleState>(
@@ -168,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                         height: double.infinity,
                         width: double.infinity,
                         child: Center(
-                          child: Text('failed to fetch Videos'),
+                          child: Text('failed to fetch Articles'),
                         ),
                       );
                     }
@@ -178,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                           height: double.infinity,
                           width: double.infinity,
                           child: Center(
-                            child: Text('no video found'),
+                            child: Text('no Articles found'),
                           ),
                         );
                       }

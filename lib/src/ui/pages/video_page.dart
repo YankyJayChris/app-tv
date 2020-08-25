@@ -40,6 +40,10 @@ class _VideoPageState extends State<VideoPage> {
     }
   }
 
+  Future<Null> _refreshPage() async {
+    _videoBloc = BlocProvider.of<VideoBloc>(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +81,11 @@ class _VideoPageState extends State<VideoPage> {
               ),
               SizedBox(width: 15),
               GestureDetector(
-                  onTap: () {}, child: Icon(Icons.search, color: Colors.black)),
+                onTap: () {
+                  Navigator.pushNamed(context, '/searchpage');
+                },
+                child: Icon(Icons.search, color: Colors.black),
+              ),
               SizedBox(width: 15),
               // GestureDetector(
               //   onTap: () {},
@@ -93,9 +101,7 @@ class _VideoPageState extends State<VideoPage> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () {
-          return null;
-        },
+        onRefresh: _refreshPage,
         child: SingleChildScrollView(
           controller: _scrollController,
           child: BlocBuilder<VideoBloc, VideoState>(builder: (context, state) {

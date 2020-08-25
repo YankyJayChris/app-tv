@@ -16,6 +16,7 @@ class TopBanner extends StatelessWidget {
         height: MediaQuery.of(context).size.height * (30 / 100),
         width: double.infinity,
         decoration: BoxDecoration(
+          color: Colors.grey,
           image: DecorationImage(
             image: NetworkImage(
                 video.thumbnail),

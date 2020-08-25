@@ -11,7 +11,7 @@ import '../../models/video.dart';
 import '../widgets/bottom_loder.dart';
 import '../widgets/video_row_card.dart';
 
-// import 'package:screen/screen.dart';
+import 'package:screen/screen.dart';
 
 class VideoDetailScreen extends StatefulWidget {
   final Video video;
@@ -36,7 +36,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
     super.initState();
     player.setDataSource(widget.video.videoLocation, autoPlay: true);
 
-    // initPlatformState();
+    initPlatformState();
   }
 
   @override
@@ -48,15 +48,16 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
   refreshVideo() {
     player.setDataSource(widget.video.videoLocation, autoPlay: true);
   }
-  // initPlatformState() async {
-  //   Screen.keepOn(_isKeptOn);
-  //   bool keptOn = await Screen.isKeptOn;
-  //   double brightness = await Screen.brightness;
-  //   setState(() {
-  //     _isKeptOn = keptOn;
-  //     _brightness = brightness;
-  //   });
-  // }
+  
+  initPlatformState() async {
+    Screen.keepOn(_isKeptOn);
+    bool keptOn = await Screen.isKeptOn;
+    double brightness = await Screen.brightness;
+    setState(() {
+      _isKeptOn = keptOn;
+      _brightness = brightness;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +97,9 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
                 ),
                 SizedBox(width: 15),
                 GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, '/searchpage');
+                    },
                     child: Icon(Icons.search, color: Colors.black)),
                 SizedBox(width: 15),
                 // GestureDetector(

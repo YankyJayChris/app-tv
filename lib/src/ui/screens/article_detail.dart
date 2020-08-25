@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-// import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-// import 'package:flutter_html_textview_render/html_text_view.dart';
-// import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:flutter_html_textview_render/html_text_view.dart';
 
 import 'package:newsapp/src/models/models.dart';
+import 'package:flutter_html_textview_render/html_text_view.dart';
+import 'package:html_unescape/html_unescape.dart';
+
+
+// import 'package:flutter_html/flutter_html.dart';
+// import 'package:flutter_html/html_parser.dart';
+// import 'package:flutter_html/style.dart';
 
 class ArticleDetailScreen extends StatefulWidget {
   final Article post;
@@ -16,6 +18,7 @@ class ArticleDetailScreen extends StatefulWidget {
 }
 
 class ArticleDetailScreenState extends State<ArticleDetailScreen> {
+  var unescape = new HtmlUnescape();
   nested() {
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -41,27 +44,15 @@ class ArticleDetailScreenState extends State<ArticleDetailScreen> {
           )
         ];
       },
-      body: SingleChildScrollView(
-        child: Container(
-          margin: EdgeInsets.all(16.0),
-          child: Center(
-            child: Text(
-              "${widget.post.orginalText}",
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-              textAlign: TextAlign.start,
-            ),
+      body: Container(
+        margin: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+        child: SingleChildScrollView(
+          child: HtmlTextView(
+            data: "${unescape.convert(widget.post.orginalText)}",
+            anchorColor: Colors.purple[800],
           ),
         ),
       ),
-      // body: Container(
-      //     margin: EdgeInsets.all(16.0),
-      //     child: HtmlTextView(
-      //       data: "<div style='color: #0000ff'>${widget.post.orginalText}</div>",
-      //       anchorColor: Color(0xFFFF0000),
-      //     ),),
     );
   }
 

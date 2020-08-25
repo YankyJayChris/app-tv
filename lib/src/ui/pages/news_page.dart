@@ -17,13 +17,13 @@ class NewsPage extends StatefulWidget {
 class _NewsPageState extends State<NewsPage> {
   final _scrollController = ScrollController(initialScrollOffset: 0.0);
   final _scrollThreshold = 200.0;
-  ArticleBloc _videoBloc;
+  ArticleBloc _articleBloc;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    _videoBloc = BlocProvider.of<ArticleBloc>(context);
+    _articleBloc = BlocProvider.of<ArticleBloc>(context);
   }
 
   @override
@@ -36,8 +36,12 @@ class _NewsPageState extends State<NewsPage> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _videoBloc.add(ArticleFetched());
+      _articleBloc.add(ArticleFetched());
     }
+  }
+
+  Future<Null> _refreshPage() async {
+    _articleBloc = BlocProvider.of<ArticleBloc>(context);
   }
 
   @override
@@ -77,7 +81,11 @@ class _NewsPageState extends State<NewsPage> {
               ),
               SizedBox(width: 15),
               GestureDetector(
-                  onTap: () {}, child: Icon(Icons.search, color: Colors.black)),
+                onTap: () {
+                  Navigator.pushNamed(context, '/searchpage');
+                },
+                child: Icon(Icons.search, color: Colors.black),
+              ),
               SizedBox(width: 15),
               // GestureDetector(
               //   onTap: () {},
@@ -93,9 +101,7 @@ class _NewsPageState extends State<NewsPage> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () {
-          return null;
-        },
+        onRefresh: _refreshPage,
         child: SingleChildScrollView(
           controller: _scrollController,
           child:
@@ -105,7 +111,7 @@ class _NewsPageState extends State<NewsPage> {
                 height: double.infinity,
                 width: double.infinity,
                 child: Center(
-                  child: Text('failed to fetch Videos'),
+                  child: Text('failed to fetch Articles'),
                 ),
               );
             }
@@ -115,7 +121,7 @@ class _NewsPageState extends State<NewsPage> {
                   height: double.infinity,
                   width: double.infinity,
                   child: Center(
-                    child: Text('no video found'),
+                    child: Text('no Articles found'),
                   ),
                 );
               }

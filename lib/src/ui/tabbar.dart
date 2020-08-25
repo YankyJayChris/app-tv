@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +16,12 @@ import 'package:newsapp/src/ui/pages/search_page.dart';
 import 'package:newsapp/src/ui/pages/video_page.dart';
 
 class TabScreen extends StatefulWidget {
+  final int tabIndex;
+
+  TabScreen({
+    Key key,
+    this.tabIndex = 0,
+  }) : super(key: key);
   @override
   TabScreenState createState() => new TabScreenState();
 }
@@ -23,6 +34,9 @@ class TabScreenState extends State<TabScreen> {
   final Key keyProfile = PageStorageKey('pageProfile');
   VideoBloc _videoBloc;
 
+  final FirebaseMessaging _messaging = FirebaseMessaging();
+  final Firestore _db = Firestore.instance;
+
   int currentTab = 1;
 
   VideoPage myVideos;
@@ -32,6 +46,7 @@ class TabScreenState extends State<TabScreen> {
   ProfilePage profile;
   List<Widget> pages;
   Widget currentPage;
+  StreamSubscription iosSubscription;
 
   final PageStorageBucket bucket = PageStorageBucket();
 
@@ -56,9 +71,52 @@ class TabScreenState extends State<TabScreen> {
     pages = [home, search, myNews, myVideos, profile];
     _videoBloc = BlocProvider.of<VideoBloc>(context);
 
-    currentPage = home;
-    currentTab = 0;
+    _messaging.subscribeToTopic('news');
+    if (Platform.isIOS) {
+      iosSubscription = _messaging.onIosSettingsRegistered.listen((data) {
+        _messaging.subscribeToTopic('news');
+      });
+
+      _messaging.requestNotificationPermissions(IosNotificationSettings());
+    }
+
+    currentPage = pages[widget.tabIndex];
+    currentTab = widget.tabIndex;
+    _saveDeviceToken();
     super.initState();
+  }
+
+  /// Get the token, save it to the database for current user
+  _saveDeviceToken() async {
+    String fcmToken = await _messaging.getToken();
+
+    if (fcmToken != null) {
+      var tokens = _db
+          .collection('devices')
+          .document(fcmToken)
+          .collection('tokens')
+          .document(fcmToken);
+
+      await tokens.setData({
+        'token': fcmToken,
+        'createdAt': FieldValue.serverTimestamp(), // optional
+        'platform': Platform.operatingSystem // optional
+      });
+    }
+    _messaging.configure(
+          onMessage: (Map<String, dynamic> message) async {
+            print("onMessage: $message");
+            
+        },
+        onLaunch: (Map<String, dynamic> message) async {
+            print("onLaunch: $message");
+            // TODO optional
+        },
+        onResume: (Map<String, dynamic> message) async {
+            print("onResume: $message");
+            // TODO optional
+        },
+      );
   }
 
   @override
