@@ -15,7 +15,7 @@ class RowItem extends StatelessWidget {
       children: <Widget>[
         GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/articledetail', arguments: post);
+            Navigator.pushNamed(context, '/articledetail', arguments: "${post.id}");
           },
           child: Padding(
             padding: const EdgeInsets.all(7.0),

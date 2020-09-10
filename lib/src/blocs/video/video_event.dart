@@ -6,3 +6,4 @@ abstract class VideoEvent extends Equatable {
 }
 
 class VideoFetched extends VideoEvent {}
+class VideoRefresh extends VideoEvent {}

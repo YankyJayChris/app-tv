@@ -73,7 +73,6 @@ class _OtpPagenewState extends State<OtpPagenew> {
             'password': user.uid,
           };
           print("=========  working ==========");
-          UserPreferences().authData = jsonEncode(data);
           BlocProvider.of<AuthenticationBloc>(context)
               .add(LoggedIn(password: user.uid, phoneNumber: user.phoneNumber,));
           Navigator.pushNamed(context, '/home', arguments: 4);

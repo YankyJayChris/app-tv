@@ -1,13 +1,23 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get_ip/get_ip.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:newsapp/src/blocs/auth/bloc.dart';
 import 'package:newsapp/src/blocs/video/bloc.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:newsapp/src/models/userRepo.dart';
+import 'package:newsapp/src/models/video.dart';
+import 'package:newsapp/src/repository/local_data.dart';
+import 'package:newsapp/src/resources/strings.dart';
+
 
 import 'package:newsapp/src/ui/pages/home_page.dart';
 import 'package:newsapp/src/ui/pages/news_page.dart';
@@ -33,6 +43,7 @@ class TabScreenState extends State<TabScreen> {
   final Key keyVideos = PageStorageKey('pageVideos');
   final Key keyProfile = PageStorageKey('pageProfile');
   VideoBloc _videoBloc;
+  String _ip = 'Unknown';
 
   final FirebaseMessaging _messaging = FirebaseMessaging();
   final Firestore _db = Firestore.instance;
@@ -47,6 +58,10 @@ class TabScreenState extends State<TabScreen> {
   List<Widget> pages;
   Widget currentPage;
   StreamSubscription iosSubscription;
+  String _appBadgeSupported = 'Unknown';
+  LocalData prefs = LocalData();
+  UserRespoModel userData;
+  AuthenticationBloc _authenticationBloc;
 
   final PageStorageBucket bucket = PageStorageBucket();
 
@@ -79,16 +94,17 @@ class TabScreenState extends State<TabScreen> {
 
       _messaging.requestNotificationPermissions(IosNotificationSettings());
     }
-
+    _checkLogin();
+    _saveDeviceToken();
     currentPage = pages[widget.tabIndex];
     currentTab = widget.tabIndex;
-    _saveDeviceToken();
     super.initState();
   }
 
   /// Get the token, save it to the database for current user
   _saveDeviceToken() async {
     String fcmToken = await _messaging.getToken();
+    print(fcmToken);
 
     if (fcmToken != null) {
       var tokens = _db
@@ -104,19 +120,112 @@ class TabScreenState extends State<TabScreen> {
       });
     }
     _messaging.configure(
-          onMessage: (Map<String, dynamic> message) async {
-            print("onMessage: $message");
-            
-        },
-        onLaunch: (Map<String, dynamic> message) async {
-            print("onLaunch: $message");
-            // TODO optional
-        },
-        onResume: (Map<String, dynamic> message) async {
-            print("onResume: $message");
-            // TODO optional
-        },
-      );
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        var view = message['data']['type'];
+        var post = message['data']['post'];
+        print("onMessage: $post");
+        _addBadge();
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message['notification']['title']),
+              subtitle: Text(message['notification']['body']),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('onLaunch: $message');
+        _serialiseAndNavigate(message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('onResume: $message');
+        _serialiseAndNavigate(message);
+      },
+    );
+  }
+
+  void _serialiseAndNavigate(Map<String, dynamic> message) {
+    var view = message['data']['type'];
+    var post = message['data']['post'];
+    print("onLaunch: $view");
+
+    if (view != null) {
+      // Navigate to the create post view
+      if (view == 'video') {
+        Video video = Video.fromJson(jsonDecode(post));
+        video.thumbnail = AppStrings.mainURL + video.thumbnail;
+        video.videoLocation = AppStrings.mainURL + video.videoLocation;
+        video.owner.avatar = AppStrings.mainURL + video.owner.avatar;
+        print(video.owner.avatar);
+        Navigator.pushNamed(context, '/videodetail', arguments: video);
+      }
+      if (view == 'article') {
+        Navigator.pushNamed(context, '/articledetail', arguments: post);
+      }
+      // If there's no view it'll just open the app on the first view
+    }
+  }
+
+  _badgeState() async {
+    String appBadgeSupported;
+    
+    try {
+      bool res = await FlutterAppBadger.isAppBadgeSupported();
+      if (res) {
+        appBadgeSupported = 'Supported';
+      } else {
+        appBadgeSupported = 'Not supported';
+      }
+    } on PlatformException {
+      appBadgeSupported = 'Failed to get badge support.';
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _appBadgeSupported = appBadgeSupported;
+    });
+  }
+
+  void _addBadge() {
+    Future<int> noNum = prefs.getsubNotNumber();
+    int number = 0;
+    noNum.then((data) {
+      number = data + 1;
+    });
+    if (number > 0) {
+      prefs.setsubNotNumber(number);
+      FlutterAppBadger.updateBadgeCount(number);
+      print(_appBadgeSupported);
+    }
+  }
+
+  void _removeBadge() {
+    FlutterAppBadger.removeBadge();
+  }
+
+  _checkLogin() {
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    Future<String> userLocal = prefs.getuserData();
+    userLocal.then((data) {
+      print("this the data i have" + data.toString());
+      UserRespoModel userData =
+          UserRespoModel.fromJson(jsonDecode(data.toString()));
+      print("this the data i have" + userData.toString());
+      BlocProvider.of<AuthenticationBloc>(context)
+          .add(Autheticated(userData: userData));
+    }, onError: (e) {
+      print(e);
+    });
   }
 
   @override

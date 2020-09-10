@@ -41,7 +41,7 @@ class _NewsPageState extends State<NewsPage> {
   }
 
   Future<Null> _refreshPage() async {
-    _articleBloc = BlocProvider.of<ArticleBloc>(context);
+    BlocProvider.of<ArticleBloc>(context).add(ArticleRefresh());
   }
 
   @override

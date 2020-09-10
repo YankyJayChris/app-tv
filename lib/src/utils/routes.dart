@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:newsapp/src/repository/user_repository.dart';
 import 'package:newsapp/src/ui/pages/search_page.dart';
 import 'package:newsapp/src/ui/screens/article_detail.dart';
+import 'package:newsapp/src/ui/screens/intro_page.dart';
 import 'package:newsapp/src/ui/screens/new_onboarding.dart';
 // import 'package:newsapp/src/ui/screens/login_page.dart';
 import 'package:newsapp/src/ui/screens/onboarding.dart';
-import 'package:newsapp/src/ui/screens/otp_page.dart';
 import 'package:newsapp/src/ui/screens/otp_page_news.dart';
 import 'package:newsapp/src/ui/screens/phone_login.dart';
 import 'package:newsapp/src/ui/screens/radio_screen.dart';
@@ -47,13 +47,13 @@ class RouteGenerator {
       case '/videodetail':
         return MaterialPageRoute(builder: (_) => VideoDetailScreen(video: args));
       case '/articledetail':
-        return MaterialPageRoute(builder: (_) => ArticleDetailScreen(post: args));
+        return MaterialPageRoute(builder: (_) => ArticleDetailScreen(postId: args));
       case '/sendvideo':
         return MaterialPageRoute(builder: (_) => SendVideo());
       case '/searchpage':
         return MaterialPageRoute(builder: (_) => SearchPage());
       case '/onboarding':
-        return MaterialPageRoute(builder: (_) => Onboarding());
+        return MaterialPageRoute(builder: (_) => IntroPage());
       case '/otpPage':
         return MaterialPageRoute(builder: (_) => OtpPagenew(mobileNumber: args));
       default:

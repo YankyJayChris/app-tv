@@ -18,8 +18,6 @@ class OnboardingState extends State<Onboarding> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    data = UserPreferences().userData;
-
     super.initState();
   }
   

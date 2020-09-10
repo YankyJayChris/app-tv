@@ -6,3 +6,4 @@ abstract class ArticleEvent extends Equatable {
 }
 
 class ArticleFetched extends ArticleEvent {}
+class ArticleRefresh extends ArticleEvent {}

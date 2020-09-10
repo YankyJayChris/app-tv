@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:newsapp/src/blocs/auth/bloc.dart';
 import 'package:newsapp/src/models/user.dart';
+import 'package:newsapp/src/models/userRepo.dart';
+import 'package:newsapp/src/repository/local_data.dart';
 import 'package:newsapp/src/repository/user_preferences.dart';
 import 'package:newsapp/src/resources/strings.dart';
 import 'package:newsapp/src/ui/screens/login_btn.dart';
@@ -18,14 +20,28 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final String userData = UserPreferences().userData;
+  LocalData prefs = LocalData();
+  UserRespoModel userData;
   AuthenticationBloc _authenticationBloc;
+  bool subNot = true;
 
   @override
   void initState() {
     super.initState();
-    print("user from pref: "+userData);
+    _notification();
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+  }
+
+  _notification() {
+    Future<bool> notData = prefs.getsubNot();
+    notData.then((data) {
+      setState(() {
+        subNot = data;
+      });
+      prefs.setsubNot(subNot);
+    }, onError: (e) {
+      print(e);
+    });
   }
 
   @override
@@ -34,23 +50,88 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          // backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.white),
-          title: Text(
-            "Profile",
-            style: TextStyle(color: Colors.white),
+          backgroundColor: Colors.white,
+          title: Row(
+            children: <Widget>[
+              Image.asset(
+                'assets/images/logo_44.png',
+                width: 100,
+                height: 200,
+              ),
+              SizedBox(
+                width: 5.0,
+              ),
+            ],
+            mainAxisAlignment: MainAxisAlignment.start,
           ),
           actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {},
-            ),
+            Row(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/sendvideo');
+                  },
+                  child: Icon(
+                    Icons.videocam,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(width: 15),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/searchpage');
+                    },
+                    child: Icon(Icons.search, color: Colors.black)),
+                SizedBox(width: 15),
+                // GestureDetector(
+                //   onTap: () {},
+                //   child: Image.asset(
+                //     'assets/icons/user.png',
+                //     width: 40,
+                //     height: 30,
+                //   ),
+                // )
+                // Stack(
+                //   children: <Widget>[
+                //     new IconButton(
+                //         icon: Icon(Icons.notifications, color: Colors.black),
+                //         onPressed: () {}),
+                //     2 != 0
+                //         ? new Positioned(
+                //             right: 11,
+                //             top: 11,
+                //             child: new Container(
+                //               padding: EdgeInsets.all(2),
+                //               decoration: new BoxDecoration(
+                //                 color: Colors.red,
+                //                 borderRadius: BorderRadius.circular(6),
+                //               ),
+                //               constraints: BoxConstraints(
+                //                 minWidth: 14,
+                //                 minHeight: 14,
+                //               ),
+                //               child: Text(
+                //                 '2',
+                //                 style: TextStyle(
+                //                   color: Colors.white,
+                //                   fontSize: 8,
+                //                 ),
+                //                 textAlign: TextAlign.center,
+                //               ),
+                //             ),
+                //           )
+                //         : new Container()
+                //   ],
+                // ),
+              ],
+              mainAxisAlignment: MainAxisAlignment.end,
+            )
           ],
         ),
         body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
             builder: (context, state) {
           if (state is Authenticated) {
-            return profileWithData(context, state.userData.userData);
+            return profileWithData(context, state.userData.userData, subNot);
           }
           if (state is Unauthenticated) {
             return CanLogin();
@@ -71,7 +152,8 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  SingleChildScrollView profileWithData(BuildContext context, UserModel data) {
+  SingleChildScrollView profileWithData(
+      BuildContext context, UserModel data, bool subNot) {
     final mydata = data;
 
     return SingleChildScrollView(
@@ -179,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 buildprofileDetail(
                     'City', (mydata.city == "") ? "Kigali" : mydata.city),
                 SizedBox(height: 30.0),
-                buildSwicher('Notifications', true),
+                buildSwicher('Notifications', subNot),
                 SizedBox(height: 8.0),
                 // buildprofileDetail('Favolite writers', "4"),
               ],
@@ -242,9 +324,13 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             CustomSwitch(
               activeColor: Colors.purple[800],
-              value: data,
+              value: subNot,
               onChanged: (value) {
                 print("VALUE : $value");
+                setState(() {
+                    subNot = value;
+                });
+                prefs.setsubNot(subNot);
                 if (value == true) {
                   _messaging.subscribeToTopic('news');
                 } else {

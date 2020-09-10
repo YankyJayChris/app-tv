@@ -54,7 +54,6 @@ class _RadioScreenState extends State<RadioScreen> {
 
   void initAudioPlayer() {
     audioPlayer = AudioPlayer();
-
     _audioPlayerStateSubscription =
         audioPlayer.onPlayerStateChanged.listen((s) {
       if (s == AudioPlayerState.PLAYING) {
@@ -70,6 +69,7 @@ class _RadioScreenState extends State<RadioScreen> {
   }
 
   Future play() async {
+    await audioPlayer.stop();
     await audioPlayer.play(url);
     await audioPlayer.mute(false);
     setState(() {

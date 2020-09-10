@@ -36,7 +36,7 @@ class _TvScreenState extends State<TvScreen> {
     player.setDataSource("rtmp://80.241.215.175:1935/tv1rwanda/tv1rwanda",
         autoPlay: true);
 
-    // initPlatformState();
+    initPlatformState();
   }
 
   @override

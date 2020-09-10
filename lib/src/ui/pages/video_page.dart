@@ -41,7 +41,7 @@ class _VideoPageState extends State<VideoPage> {
   }
 
   Future<Null> _refreshPage() async {
-    _videoBloc = BlocProvider.of<VideoBloc>(context);
+    BlocProvider.of<VideoBloc>(context).add(VideoRefresh());
   }
 
   @override
@@ -139,8 +139,10 @@ class _VideoPageState extends State<VideoPage> {
                 ],
               );
             }
-            return Center(
-              child: CircularProgressIndicator(),
+            return Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           }),
         ),

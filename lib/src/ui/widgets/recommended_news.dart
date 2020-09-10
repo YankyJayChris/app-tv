@@ -12,7 +12,7 @@ class RecommendedNews extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, '/articledetail', arguments: post);
+          Navigator.pushNamed(context, '/articledetail', arguments: "${post.id}");
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

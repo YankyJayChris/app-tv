@@ -33,8 +33,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Null> _refreshPage() async {
-    _videoBloc = BlocProvider.of<VideoBloc>(context);
-    _articleBloc = BlocProvider.of<ArticleBloc>(context);
+    BlocProvider.of<ArticleBloc>(context)
+                                  .add(ArticleRefresh());
+    BlocProvider.of<VideoBloc>(context)
+                                  .add(VideoRefresh());
   }
 
   @override
@@ -84,6 +86,38 @@ class _HomePageState extends State<HomePage> {
                 //     height: 30,
                 //   ),
                 // )
+                // Stack(
+                //   children: <Widget>[
+                //     new IconButton(
+                //         icon: Icon(Icons.notifications, color: Colors.black),
+                //         onPressed: () {}),
+                //     2 != 0
+                //         ? new Positioned(
+                //             right: 11,
+                //             top: 11,
+                //             child: new Container(
+                //               padding: EdgeInsets.all(2),
+                //               decoration: new BoxDecoration(
+                //                 color: Colors.red,
+                //                 borderRadius: BorderRadius.circular(6),
+                //               ),
+                //               constraints: BoxConstraints(
+                //                 minWidth: 14,
+                //                 minHeight: 14,
+                //               ),
+                //               child: Text(
+                //                 '2',
+                //                 style: TextStyle(
+                //                   color: Colors.white,
+                //                   fontSize: 8,
+                //                 ),
+                //                 textAlign: TextAlign.center,
+                //               ),
+                //             ),
+                //           )
+                //         : new Container()
+                //   ],
+                // ),
               ],
               mainAxisAlignment: MainAxisAlignment.end,
             )
@@ -169,8 +203,29 @@ class _HomePageState extends State<HomePage> {
                       return Container(
                         height: double.infinity,
                         width: double.infinity,
-                        child: Center(
-                          child: Text('failed to fetch Articles'),
+                        child: Container(
+                          width: 45,
+                          height: 45,
+                          child: FlatButton(
+                            color: Colors.purple[800],
+                            textColor: Colors.white,
+                            disabledColor: Colors.grey,
+                            disabledTextColor: Colors.black,
+                            padding: EdgeInsets.all(8.0),
+                            splashColor: Colors.green[700],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            onPressed: () {
+                              /*...*/
+                              BlocProvider.of<ArticleBloc>(context)
+                                  .add(ArticleRefresh());
+                            },
+                            child: Text(
+                              "Logout",
+                              style: TextStyle(fontSize: 18.0),
+                            ),
+                          ),
                         ),
                       );
                     }

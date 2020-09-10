@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:newsapp/src/models/userRepo.dart';
+import 'package:newsapp/src/repository/local_data.dart';
 import 'package:newsapp/src/repository/user_preferences.dart';
 import 'package:newsapp/src/resources/strings.dart';
 
@@ -55,10 +56,11 @@ class UserRepository {
     );
     if (res.statusCode == 200) {
       print("====== am here now we go =======");
+      LocalData prefs =  LocalData();
       var myRes = json.decode(res.body);
       UserRespoModel userData = UserRespoModel.fromJson(myRes);
-      UserPreferences().userData = jsonEncode(userData);
-      UserPreferences().sesionData = jsonEncode(userData.data.sessionId);
+      prefs.setAuthToken(jsonEncode(userData.data.sessionId));
+      prefs.setuserData(jsonEncode(userData));
       return userData;
     } else {
       throw Exception('Failed to get user data');

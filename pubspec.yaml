@@ -56,9 +56,11 @@ dependencies:
   country_code_picker: ^1.4.0
   numeric_keyboard: ^1.0.0
   cloud_firestore: ^0.12.5
-  firebase_messaging: ^5.0.2
+  firebase_messaging: ^5.1.4
   custom_switch: ^0.0.1
-  # splashscreen: ^1.2.0
+  flutter_app_badger: ^1.1.2
+  splashscreen: ^1.2.0
+  get_ip: ^0.4.0
   # flutter_html: ^1.0.2
   # open_url: ^1.0.1
 

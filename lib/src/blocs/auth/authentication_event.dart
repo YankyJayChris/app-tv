@@ -1,7 +1,7 @@
-  import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
   import 'package:meta/meta.dart';
+import 'package:newsapp/src/models/userRepo.dart';
 
   @immutable
   abstract class AuthenticationEvent extends Equatable {
@@ -27,6 +27,17 @@ import 'package:equatable/equatable.dart';
 
     @override
     List<Object> get props => [phoneNumber,password];
+  }
+  class Autheticated extends AuthenticationEvent {
+    final UserRespoModel userData;
+
+    Autheticated({@required this.userData }) : super([userData]);
+
+    @override
+    String toString() => 'Autheticated { data: $userData }';
+
+    @override
+    List<Object> get props => [userData];
   }
 
   class LoggedOut extends AuthenticationEvent {

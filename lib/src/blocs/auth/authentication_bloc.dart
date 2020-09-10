@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:newsapp/src/models/userRepo.dart';
-import 'package:newsapp/src/repository/user_preferences.dart';
+import 'package:newsapp/src/repository/local_data.dart';
 import 'package:newsapp/src/repository/user_repository.dart';
 import './bloc.dart';
 
@@ -13,6 +13,7 @@ import 'package:rxdart/rxdart.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final http.Client httpClient;
+  LocalData prefs = LocalData();
 
   AuthenticationBloc({@required this.httpClient})
       : super(InitialAuthenticationState());
@@ -33,20 +34,27 @@ class AuthenticationBloc
     AuthenticationEvent event,
   ) async* {
     if (event is Uninitialized) {
-      final Map myuserData = UserPreferences().userData;
-      UserRespoModel userData = UserRespoModel.fromJson(myuserData);
+      yield Loading();
+      UserRespoModel userData;
+      Future<String> userLocal = prefs.getuserData();
+      userLocal.then((data) {
+        print("this the data i have" + data.toString());
+        userData = UserRespoModel.fromJson(jsonDecode(data.toString()));
+      }, onError: (e) {
+        print(e);
+      });
 
       if (userData.apiStatus == "200") {
-        print("app stated");
+        print("==========> we got data now <===========");
         yield Authenticated(userData: userData);
       } else {
+        print("==========> no data found <===========");
         yield Unauthenticated();
       }
     }
 
     if (event is LoggedIn) {
-      UserPreferences().userData = " ";
-      print("=========  am here in bloc  ==========");
+      prefs.setuserData("");
       yield Loading();
 
       UserRespoModel userData = await UserRepository.loginOnBackend(
@@ -54,8 +62,14 @@ class AuthenticationBloc
         password: event.phoneNumber,
       );
       if (userData.apiStatus == "200") {
-        UserPreferences().userData = jsonEncode(userData);
-        print("=========  am here in bloc: " + UserPreferences().userData);
+        prefs.setuserData(jsonEncode(userData));
+        print("=========  am here in bloc: " + jsonEncode(userData));
+        Future<String> userLocal = prefs.getuserData();
+        userLocal.then((data) {
+          print("get from pref:" + data.toString());
+        }, onError: (e) {
+          print(e);
+        });
         yield Authenticated(userData: userData);
       } else {
         yield Unauthenticated();
@@ -64,8 +78,19 @@ class AuthenticationBloc
 
     if (event is LoggedOut) {
       yield Loading();
-      UserPreferences().userData = " ";
+      prefs.setuserData("");
       yield Unauthenticated();
+    }
+
+    if (event is Autheticated) {
+      UserRespoModel userData = event.userData;
+      if (userData.apiStatus == "200") {
+        print("==========> we got data now <===========");
+        yield Authenticated(userData: userData);
+      } else {
+        print("==========> no data found <===========");
+        yield Unauthenticated();
+      }
     }
   }
 }

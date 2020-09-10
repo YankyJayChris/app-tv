@@ -41,8 +41,9 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
           return;
         }
         if (currentState is ArticleSuccess) {
-          final articles = await _fetcArticles(currentState.articles.length, 10);
-          yield  articles.isEmpty
+          final articles =
+              await _fetcArticles(currentState.articles.length, 10);
+          yield articles.isEmpty
               ? currentState.copyWith(hasReachedMax: true)
               : ArticleSuccess(
                   articles: currentState.articles + articles,
@@ -52,6 +53,15 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
       } catch (_) {
         yield ArticleFailure();
       }
+    }
+    if (event is ArticleRefresh) {
+      print("am refreshing");
+      final List articles = await _fetcArticles(0, 5);
+      yield ArticleSuccess(
+        articles: articles,
+        hasReachedMax: false,
+      );
+      return;
     }
   }
 

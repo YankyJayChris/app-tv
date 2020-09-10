@@ -60,6 +60,18 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
         yield VideoFailure();
       }
     }
+
+    if(event is VideoRefresh){
+      final List videos = await _fetchVideos(0, 5);
+      yield VideoSuccess(
+        featured: videos[0],
+        top: videos[1],
+        latest: videos[2],
+        fav: videos[3],
+        hasReachedMax: false,
+      );
+      return;
+    }
   }
 
   bool _hasReachedMax(VideoState state) =>
@@ -75,7 +87,6 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
       List<Video> featured = allVideos.featured;
       List<Video> latest = allVideos.latest;
       List<Video> fav = allVideos.fav;
-      print(allVideos.toString());
       return [featured, top, latest, fav];
     } else {
       throw Exception('error fetching videos');

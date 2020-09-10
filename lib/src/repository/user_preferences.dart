@@ -46,4 +46,11 @@ class UserPreferences {
   set onBoarding(bool value) {
     _prefs.setBool('onBoarding', value);
   }
+  get notNumber {
+    return _prefs.getBool('notNumber') ?? false;
+  }
+
+  set notNumber(bool value) {
+    _prefs.setBool('notNumber', value);
+  }
 }
