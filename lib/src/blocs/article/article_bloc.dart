@@ -41,6 +41,7 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
           return;
         }
         if (currentState is ArticleSuccess) {
+          print(currentState.articles.length);
           final articles =
               await _fetcArticles(currentState.articles.length, 10);
           yield articles.isEmpty
@@ -70,7 +71,7 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
 
   Future<List> _fetcArticles(int startIndex, int limit) async {
     final response = await httpClient.get(AppStrings.primeURL +
-        '?type=fetch_articles&offset$startIndex&limit=$limit');
+        '?type=fetch_articles&offset=$startIndex&limit=$limit');
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       print(data);

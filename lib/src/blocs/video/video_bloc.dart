@@ -45,7 +45,10 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
           return;
         }
         if (currentState is VideoSuccess) {
-          final List videos = await _fetchVideos(currentState.latest.length, 5);
+          Video latestvideo =
+              currentState.latest[currentState.latest.length - 1];
+          final List videos = await _fetchVideos(latestvideo.id, 5);
+          print(videos[2].isEmpty);
           yield videos[2].isEmpty
               ? currentState.copyWith(hasReachedMax: true)
               : VideoSuccess(
@@ -61,7 +64,7 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
       }
     }
 
-    if(event is VideoRefresh){
+    if (event is VideoRefresh) {
       final List videos = await _fetchVideos(0, 5);
       yield VideoSuccess(
         featured: videos[0],

@@ -12,6 +12,7 @@ import 'package:newsapp/src/repository/article_api.dart';
 import 'package:newsapp/src/resources/strings.dart';
 
 
+
 // import 'package:flutter_html/flutter_html.dart';
 // import 'package:flutter_html/html_parser.dart';
 // import 'package:flutter_html/style.dart';

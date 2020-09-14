@@ -6,6 +6,8 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 
 import 'package:newsapp/src/models/article.dart';
+import 'package:newsapp/src/models/search_video.dart';
+import 'package:newsapp/src/models/video.dart';
 import 'package:newsapp/src/resources/strings.dart';
 import 'package:newsapp/src/ui/widgets/vertical_items.dart';
 
@@ -22,6 +24,9 @@ class _SearchPageState extends State<SearchPage> {
   bool _isSearching = false;
   String _error;
   List<Article> _results = List();
+  List<Video> _resultsideos = List();
+  List<bool> isSelected;
+  int tab;
 
   Timer debounceTimer;
 
@@ -51,6 +56,19 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
+  Future<List<Video>> _getALlVideos(String text) async {
+    var response = await http
+        .get(AppStrings.primeURL + '?type=search_videos&keyword=$text');
+    print(json.decode(response.body));
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      List<Video> videos = SearchVideoModel.fromJson(data).data;
+      return videos;
+    } else {
+      throw Exception('error fetching articles');
+    }
+  }
+
   void performSearch(String query) async {
     if (query.isEmpty) {
       setState(() {
@@ -68,16 +86,25 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     final repos = await _getALlPosts(query);
+    final reposvideo = await _getALlVideos(query);
     if (this._searchQuery.text == query && this.mounted) {
       setState(() {
         _isSearching = false;
         if (repos != null) {
           _results = repos;
+          _resultsideos = reposvideo;
         } else {
           _error = 'No article found';
         }
       });
     }
+  }
+
+  @override
+  void initState() {
+    isSelected = [true, false];
+    tab = 0;
+    super.initState();
   }
 
   @override
@@ -102,7 +129,11 @@ class _SearchPageState extends State<SearchPage> {
                 hintStyle: TextStyle(color: Colors.white)),
           ),
         ),
-        body: buildBody(context));
+        body: Column(
+          children: [
+            buildBody(context),
+          ],
+        ));
   }
 
   Widget buildBody(BuildContext context) {
@@ -113,12 +144,17 @@ class _SearchPageState extends State<SearchPage> {
     } else if (_searchQuery.text.isEmpty) {
       return CenterTitle('Search the news');
     } else {
-      return ListView.builder(
-          padding: EdgeInsets.symmetric(vertical: 8.0),
-          itemCount: _results.length,
-          itemBuilder: (BuildContext context, int index) {
-            return RowItem(post: _results[index]);
-          });
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView.builder(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              itemCount: _results.length,
+              itemBuilder: (BuildContext context, int index) {
+                return RowItem(post: _results[index]);
+              }),
+        ),
+      );
     }
   }
 
@@ -147,6 +183,47 @@ class _SearchPageState extends State<SearchPage> {
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       itemBuilder: (ctx, i) => RowItem(post: articles[i]),
+    );
+  }
+
+  Widget toggle() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        ToggleButtons(
+          borderColor: Colors.black,
+          fillColor: Colors.grey,
+          borderWidth: 2,
+          selectedBorderColor: Colors.black,
+          selectedColor: Colors.white,
+          borderRadius: BorderRadius.circular(0),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Open 24 Hours',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Custom Hours',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ],
+          onPressed: (int index) {
+            setState(() {
+              for (int i = 0; i < isSelected.length; i++) {
+                isSelected[i] = i == index;
+              }
+              tab = index;
+            });
+          },
+          isSelected: isSelected,
+        ),
+      ],
     );
   }
 }

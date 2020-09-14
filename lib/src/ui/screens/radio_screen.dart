@@ -54,6 +54,7 @@ class _RadioScreenState extends State<RadioScreen> {
 
   void initAudioPlayer() {
     audioPlayer = AudioPlayer();
+    play();
     _audioPlayerStateSubscription =
         audioPlayer.onPlayerStateChanged.listen((s) {
       if (s == AudioPlayerState.PLAYING) {
@@ -99,6 +100,12 @@ class _RadioScreenState extends State<RadioScreen> {
 
   void onComplete() {
     setState(() => playerState = PlayerState.stopped);
+  }
+
+  Future<Null> _refreshPage() async {
+    initAudioPlayer();
+    play();
+    _audioPlayerStateSubscription.cancel();
   }
 
   @override
@@ -163,198 +170,204 @@ class _RadioScreenState extends State<RadioScreen> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 300.0,
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                "https://radiotv1.rw/IMG/arton61.jpg?1568195784"),
-                            fit: BoxFit.cover)),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [Colors.white.withOpacity(0.7), Colors.white],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter),
+      body: RefreshIndicator(
+        onRefresh: _refreshPage,
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 300.0,
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                  "https://radiotv1.rw/IMG/arton61.jpg?1568195784"),
+                              fit: BoxFit.cover)),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            GestureDetector(
-                              onTap: () {},
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  radius: 30.0,
-                                  child: Card(
-                                    elevation: 5.0,
-                                    shape: CircleBorder(),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: Container(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 6.0),
-                                      height: 46.0,
-                                      width: 46.0,
-                                      child: Image.asset(
-                                        'assets/images/radiologo.png',
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [
+                              Colors.white.withOpacity(0.7),
+                              Colors.white
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: () {},
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    radius: 30.0,
+                                    child: Card(
+                                      elevation: 5.0,
+                                      shape: CircleBorder(),
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 6.0),
+                                        height: 46.0,
+                                        width: 46.0,
+                                        child: Image.asset(
+                                          'assets/images/radiologo.png',
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            IconButton(
-                              onPressed: isPlaying ? () => pause() : null,
-                              iconSize: 64.0,
-                              icon: Icon(Icons.stop),
-                              color: Colors.black,
-                            ),
-                            SizedBox(width: 32.0),
-                            GestureDetector(
-                              onTap: () {
-                                if (isStop || isPaused) {
-                                  play();
-                                } else {
-                                  pause();
-                                }
-                              },
-                              child: Card(
-                                elevation: 5.0,
-                                shape: CircleBorder(),
-                                clipBehavior: Clip.antiAlias,
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        color: blueColor,
-                                        borderRadius:
-                                            BorderRadius.circular(50.0)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Icon(
-                                        isPlaying
-                                            ? Icons.pause
-                                            : Icons.play_arrow,
-                                        size: 58.0,
-                                        color: Colors.white,
-                                      ),
-                                    )),
-                              ),
-                            ),
-                            SizedBox(width: 32.0),
-                            IconButton(
-                              onPressed:
-                                  isPlaying ? () => mute(!isMuted) : null,
-                              iconSize: 64.0,
-                              icon: Icon(
-                                isMuted ? Icons.volume_up : Icons.volume_off,
-                              ),
-                              color: Colors.black,
-                            ),
-                          ],
-                        ),
-                        Spacer(),
-                        Text("91.1 FM",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 32.0)),
-                        SizedBox(
-                          height: 6.0,
-                        ),
-                        Text(
-                          "Iyumvire radio one",
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(0.6),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.0),
-                        ),
-                        SizedBox(height: 16.0),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Column(
-              children: <Widget>[
-                HeaderSection(title: "Latest News", route: "news"),
-                Container(
-                    height: MediaQuery.of(context).size.height * (30 / 100),
-                    child: BlocBuilder<ArticleBloc, ArticleState>(
-                        builder: (context, state) {
-                      if (state is ArticleFailure) {
-                        return Container(
-                          height: double.infinity,
-                          width: double.infinity,
-                          child: Center(
-                            child: Text('failed to fetch Videos'),
+                            ],
                           ),
-                        );
-                      }
-                      if (state is ArticleSuccess) {
-                        if (state.articles.isEmpty) {
+                          Spacer(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              IconButton(
+                                onPressed: isPlaying ? () => pause() : null,
+                                iconSize: 64.0,
+                                icon: Icon(Icons.stop),
+                                color: Colors.black,
+                              ),
+                              SizedBox(width: 32.0),
+                              GestureDetector(
+                                onTap: () {
+                                  if (isStop || isPaused) {
+                                    play();
+                                  } else {
+                                    pause();
+                                  }
+                                },
+                                child: Card(
+                                  elevation: 5.0,
+                                  shape: CircleBorder(),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          color: blueColor,
+                                          borderRadius:
+                                              BorderRadius.circular(50.0)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Icon(
+                                          isPlaying
+                                              ? Icons.pause
+                                              : Icons.play_arrow,
+                                          size: 58.0,
+                                          color: Colors.white,
+                                        ),
+                                      )),
+                                ),
+                              ),
+                              SizedBox(width: 32.0),
+                              IconButton(
+                                onPressed:
+                                    isPlaying ? () => mute(!isMuted) : null,
+                                iconSize: 64.0,
+                                icon: Icon(
+                                  isMuted ? Icons.volume_up : Icons.volume_off,
+                                ),
+                                color: Colors.black,
+                              ),
+                            ],
+                          ),
+                          Spacer(),
+                          Text("91.1 FM",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 32.0)),
+                          SizedBox(
+                            height: 6.0,
+                          ),
+                          Text(
+                            "Iyumvire radio one",
+                            style: TextStyle(
+                                color: Colors.black.withOpacity(0.6),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0),
+                          ),
+                          SizedBox(height: 16.0),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Column(
+                children: <Widget>[
+                  HeaderSection(title: "Latest News", route: "news"),
+                  Container(
+                      height: MediaQuery.of(context).size.height * (30 / 100),
+                      child: BlocBuilder<ArticleBloc, ArticleState>(
+                          builder: (context, state) {
+                        if (state is ArticleFailure) {
                           return Container(
                             height: double.infinity,
                             width: double.infinity,
                             child: Center(
-                              child: Text('no video found'),
+                              child: Text('failed to fetch Videos'),
                             ),
                           );
                         }
+                        if (state is ArticleSuccess) {
+                          if (state.articles.isEmpty) {
+                            return Container(
+                              height: double.infinity,
+                              width: double.infinity,
+                              child: Center(
+                                child: Text('no video found'),
+                              ),
+                            );
+                          }
+                        }
+                        if (state is ArticleSuccess) {
+                          return buildLatestVideo(state.articles);
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      })),
+                  HeaderSection(title: "Latest Video", route: " "),
+                  Container(
+                    height: MediaQuery.of(context).size.height * (30 / 100),
+                    child: BlocBuilder<VideoBloc, VideoState>(
+                        builder: (context, state) {
+                      if (state is VideoFailure) {
+                        return Center(
+                          child: Text('failed to fetch Videos'),
+                        );
                       }
-                      if (state is ArticleSuccess) {
-                        return buildLatestVideo(state.articles);
+                      if (state is VideoSuccess) {
+                        if (state.latest.isEmpty) {
+                          return Center(
+                            child: Text('no video found'),
+                          );
+                        }
+                      }
+                      if (state is VideoSuccess) {
+                        return LatestVideoWidget(data: state.latest);
                       }
                       return Center(
                         child: CircularProgressIndicator(),
                       );
-                    })),
-                HeaderSection(title: "Latest Video", route: " "),
-                Container(
-                  height: MediaQuery.of(context).size.height * (30 / 100),
-                  child: BlocBuilder<VideoBloc, VideoState>(
-                      builder: (context, state) {
-                    if (state is VideoFailure) {
-                      return Center(
-                        child: Text('failed to fetch Videos'),
-                      );
-                    }
-                    if (state is VideoSuccess) {
-                      if (state.latest.isEmpty) {
-                        return Center(
-                          child: Text('no video found'),
-                        );
-                      }
-                    }
-                    if (state is VideoSuccess) {
-                      return LatestVideoWidget(data: state.latest);
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }),
-                ),
-              ],
-            )
-          ],
+                    }),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

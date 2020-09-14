@@ -1,11 +1,7 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:newsapp/src/blocs/auth/bloc.dart';
-import 'package:newsapp/src/models/userRepo.dart';
-import 'package:newsapp/src/repository/user_preferences.dart';
-import 'package:newsapp/src/repository/user_repository.dart';
 import 'package:numeric_keyboard/numeric_keyboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -73,8 +69,11 @@ class _OtpPagenewState extends State<OtpPagenew> {
             'password': user.uid,
           };
           print("=========  working ==========");
-          BlocProvider.of<AuthenticationBloc>(context)
-              .add(LoggedIn(password: user.uid, phoneNumber: user.phoneNumber,));
+          BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn(
+            password: user.uid,
+            phoneNumber: user.phoneNumber,
+          ));
+          print("+++++++++ done +++++++");
           Navigator.pushNamed(context, '/home', arguments: 4);
         } else {
           showToast("Error validating OTP, try again", Colors.red);
@@ -114,7 +113,6 @@ class _OtpPagenewState extends State<OtpPagenew> {
         verificationFailed: verificationFailed,
         codeSent: codeSent,
         codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
-
   }
 
   Widget otpNumberWidget(int position) {
@@ -281,17 +279,19 @@ class ConfirmButton extends StatelessWidget {
         .signInWithCredential(_authCredential)
         .then((AuthResult value) {
       if (value.user != null) {
-         // Handle loogged in state
-          user = value.user;
-          var data = {
-            'phoneNumber': user.phoneNumber,
-            'password': user.uid,
-          };
-          print("=========  working ==========");
-          UserPreferences().authData = jsonEncode(data);
-         BlocProvider.of<AuthenticationBloc>(context)
-              .add(LoggedIn(password: user.uid, phoneNumber: user.phoneNumber,));
-          Navigator.pushNamed(context, '/home', arguments: 4);
+        // Handle loogged in state
+        user = value.user;
+        var data = {
+          'phoneNumber': user.phoneNumber,
+          'password': user.uid,
+        };
+        print("=========  working ==========");
+
+        BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn(
+          password: user.uid,
+          phoneNumber: user.phoneNumber,
+        ));
+        Navigator.pushNamed(context, '/home', arguments: 4);
       } else {
         showToast("Error validating OTP, try again", Colors.red);
       }

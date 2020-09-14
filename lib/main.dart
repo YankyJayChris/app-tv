@@ -8,7 +8,7 @@ import 'package:newsapp/src/blocs/auth/bloc.dart';
 import 'package:newsapp/src/blocs/video/bloc.dart';
 import 'package:newsapp/src/repository/local_data.dart';
 import 'package:newsapp/src/utils/routes.dart';
-
+import 'package:overlay_support/overlay_support.dart';
 
 void main() async {
   Bloc.observer = SimpleBlocObserver();
@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
     myseen.then((data) {
       if (data) {
         return "/home";
-      }else{
+      } else {
         return "/onboarding";
       }
     });
@@ -59,17 +59,19 @@ class _MyAppState extends State<MyApp> {
               AuthenticationBloc(httpClient: http.Client())..add(AppStarted()),
         ),
       ],
-      child: MaterialApp(
-        title: 'TV1 PRIME',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: Colors.purple[800],
-          accentColor: Colors.purple[100],
-          primarySwatch: Colors.green,
-          iconTheme: IconThemeData(color: Color(0xFF018100)),
+      child: OverlaySupport(
+        child: MaterialApp(
+          title: 'TV1 PRIME',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primaryColor: Colors.purple[800],
+            accentColor: Colors.purple[100],
+            primarySwatch: Colors.green,
+            iconTheme: IconThemeData(color: Color(0xFF018100)),
+          ),
+          initialRoute: _checkSeen(),
+          onGenerateRoute: RouteGenerator.generateRoute,
         ),
-        initialRoute: _checkSeen(),
-        onGenerateRoute: RouteGenerator.generateRoute,
       ),
     );
   }

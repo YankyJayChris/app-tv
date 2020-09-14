@@ -110,7 +110,7 @@ class _VideoPageState extends State<VideoPage> {
                 height: double.infinity,
                 width: double.infinity,
                 child: Center(
-                  child: Text('failed to fetch Videos'),
+                  child: Text('Pull down to refresh'),
                 ),
               );
             }

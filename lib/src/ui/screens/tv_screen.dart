@@ -55,6 +55,13 @@ class _TvScreenState extends State<TvScreen> {
     });
   }
 
+  Future<Null> _refreshPage() async {
+    player.setDataSource("rtmp://80.241.215.175:1935/tv1rwanda/tv1rwanda",
+        autoPlay: true);
+
+    initPlatformState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -119,90 +126,93 @@ class _TvScreenState extends State<TvScreen> {
           ],
         ),
         backgroundColor: Colors.white,
-        body: Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * (30 / 100),
-              width: MediaQuery.of(context).size.width,
-              child: SafeArea(
-                child: FijkView(
-                  player: player,
-                  fit: cover,
-                  fsFit: cover,
-                  height: MediaQuery.of(context).size.height * (30 / 100),
-                  width: MediaQuery.of(context).size.width,
+        body: RefreshIndicator(
+          onRefresh: _refreshPage,
+          child:Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * (30 / 100),
+                width: MediaQuery.of(context).size.width,
+                child: SafeArea(
+                  child: FijkView(
+                    player: player,
+                    fit: cover,
+                    fsFit: cover,
+                    height: MediaQuery.of(context).size.height * (30 / 100),
+                    width: MediaQuery.of(context).size.width,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 5.0,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    HeaderSection(title: "Latest News", route: "news"),
-                    Container(
-                        height: MediaQuery.of(context).size.height * (30 / 100),
-                        child: BlocBuilder<ArticleBloc, ArticleState>(
-                            builder: (context, state) {
-                          if (state is ArticleFailure) {
-                            return Container(
-                              height: double.infinity,
-                              width: double.infinity,
-                              child: Center(
-                                child: Text('failed to fetch Videos'),
-                              ),
-                            );
-                          }
-                          if (state is ArticleSuccess) {
-                            if (state.articles.isEmpty) {
+              SizedBox(
+                height: 5.0,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      HeaderSection(title: "Latest News", route: "news"),
+                      Container(
+                          height: MediaQuery.of(context).size.height * (30 / 100),
+                          child: BlocBuilder<ArticleBloc, ArticleState>(
+                              builder: (context, state) {
+                            if (state is ArticleFailure) {
                               return Container(
                                 height: double.infinity,
                                 width: double.infinity,
                                 child: Center(
-                                  child: Text('no video found'),
+                                  child: Text('failed to fetch Videos'),
                                 ),
                               );
                             }
+                            if (state is ArticleSuccess) {
+                              if (state.articles.isEmpty) {
+                                return Container(
+                                  height: double.infinity,
+                                  width: double.infinity,
+                                  child: Center(
+                                    child: Text('no video found'),
+                                  ),
+                                );
+                              }
+                            }
+                            if (state is ArticleSuccess) {
+                              return buildLatestVideo(state.articles);
+                            }
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          })),
+                      HeaderSection(title: "Latest News", route: " "),
+                      Container(
+                        height: MediaQuery.of(context).size.height * (30 / 100),
+                        child: BlocBuilder<VideoBloc, VideoState>(
+                            builder: (context, state) {
+                          if (state is VideoFailure) {
+                            return Center(
+                              child: Text('failed to fetch Videos'),
+                            );
                           }
-                          if (state is ArticleSuccess) {
-                            return buildLatestVideo(state.articles);
+                          if (state is VideoSuccess) {
+                            if (state.latest.isEmpty) {
+                              return Center(
+                                child: Text('no video found'),
+                              );
+                            }
+                          }
+                          if (state is VideoSuccess) {
+                            return LatestVideoWidget(data: state.latest);
                           }
                           return Center(
                             child: CircularProgressIndicator(),
                           );
-                        })),
-                    HeaderSection(title: "Latest News", route: " "),
-                    Container(
-                      height: MediaQuery.of(context).size.height * (30 / 100),
-                      child: BlocBuilder<VideoBloc, VideoState>(
-                          builder: (context, state) {
-                        if (state is VideoFailure) {
-                          return Center(
-                            child: Text('failed to fetch Videos'),
-                          );
-                        }
-                        if (state is VideoSuccess) {
-                          if (state.latest.isEmpty) {
-                            return Center(
-                              child: Text('no video found'),
-                            );
-                          }
-                        }
-                        if (state is VideoSuccess) {
-                          return LatestVideoWidget(data: state.latest);
-                        }
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }),
-                    ),
-                  ],
+                        }),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

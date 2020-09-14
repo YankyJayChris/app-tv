@@ -1,17 +1,22 @@
 // import 'package:chewie/chewie.dart';
 // import 'package:chewie/src/chewie_player.dart';
 // import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
+import 'package:screen/screen.dart';
+
 import 'package:newsapp/src/blocs/video/bloc.dart';
+import 'package:newsapp/src/resources/strings.dart';
 import 'package:newsapp/src/ui/widgets/header_section.dart';
 
 import '../../models/video.dart';
 import '../widgets/bottom_loder.dart';
 import '../widgets/video_row_card.dart';
-
-import 'package:screen/screen.dart';
 
 class VideoDetailScreen extends StatefulWidget {
   final Video video;
@@ -23,8 +28,15 @@ class VideoDetailScreen extends StatefulWidget {
 
 class _VideoDetailScreenState extends State<VideoDetailScreen> {
   final FijkPlayer player = FijkPlayer();
+  final FirebaseMessaging _messaging = FirebaseMessaging();
+  final _scrollController = ScrollController(initialScrollOffset: 0.0);
+  final _scrollThreshold = 200.0;
+  VideoBloc _videoBloc;
   bool _isKeptOn = true;
+  int views = 0;
   double _brightness = 1.0;
+
+
   static const FijkFit cover = FijkFit(
     sizeFactor: 1.0,
     aspectRatio: double.infinity,
@@ -33,8 +45,15 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
 
   @override
   void initState() {
-    super.initState();
+    
+    setState(() {
+      views = widget.video.views;
+    });
+    viewdVideo();
+    _scrollController.addListener(_onScroll);
+    _videoBloc = BlocProvider.of<VideoBloc>(context);
     player.setDataSource(widget.video.videoLocation, autoPlay: true);
+    super.initState();
 
     initPlatformState();
   }
@@ -45,10 +64,34 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
     player.release();
   }
 
-  refreshVideo() {
+  void viewdVideo() async {
+    String fcmToken = await _messaging.getToken();
+    print(fcmToken);
+    var response = await http.get(AppStrings.primeURL +
+        '?type=video_viewed&phone_id=$fcmToken&video_id=${widget.video.id}');
+    print(json.decode(response.body));
+    var body = json.decode(response.body);
+    if (body['video viewed']) {
+      setState(() {
+      views = views + 1;
+    });
+    } else {
+      throw Exception('error fetching articles');
+    }
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (maxScroll - currentScroll <= _scrollThreshold) {
+      _videoBloc.add(VideoFetched());
+    }
+  }
+
+  Future<Null> _refreshPage() async {
     player.setDataSource(widget.video.videoLocation, autoPlay: true);
   }
-  
+
   initPlatformState() async {
     Screen.keepOn(_isKeptOn);
     bool keptOn = await Screen.isKeptOn;
@@ -116,143 +159,147 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
           ],
         ),
         backgroundColor: Colors.white,
-        body: Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * (30 / 100),
-              width: MediaQuery.of(context).size.width,
-              child: SafeArea(
-                child: FijkView(
-                  player: player,
-                  fit: cover,
-                  fsFit: cover,
-                  height: MediaQuery.of(context).size.height * (30 / 100),
-                  width: MediaQuery.of(context).size.width,
+        body: RefreshIndicator(
+        onRefresh: _refreshPage,
+        child: Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * (30 / 100),
+                width: MediaQuery.of(context).size.width,
+                child: SafeArea(
+                  child: FijkView(
+                    player: player,
+                    fit: cover,
+                    fsFit: cover,
+                    height: MediaQuery.of(context).size.height * (30 / 100),
+                    width: MediaQuery.of(context).size.width,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 5.0,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                width: MediaQuery.of(context).size.width * (95 / 100),
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
-                        image: DecorationImage(
-                          image: NetworkImage(widget.video.owner.avatar),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 5.0,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * (75 / 100),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            child: Text(widget.video.title,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                                textAlign: TextAlign.start,
-                                maxLines: 3),
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                child: Text(widget.video.owner.username,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.purple[800]),
-                                    textAlign: TextAlign.start,
-                                    maxLines: 3),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  height: 5.0,
-                                  width: 5.0,
-                                  child: Container(
-                                    width: 2,
-                                    height: 2,
-                                    decoration: BoxDecoration(
-                                      color: Colors.purple[800],
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(5.0),
-                                      ),
-                                    ),
-                                  ),
+              SizedBox(
+                height: 5.0,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width * (95 / 100),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 2),
+                                image: DecorationImage(
+                                  image: NetworkImage(widget.video.owner.avatar),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              Container(
-                                child: Text("${widget.video.views} views",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black),
-                                    textAlign: TextAlign.start,
-                                    maxLines: 3),
+                            ),
+                            SizedBox(
+                              width: 5.0,
+                            ),
+                            Container(
+                              width:
+                                  MediaQuery.of(context).size.width * (75 / 100),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    child: Text(widget.video.title,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
+                                        textAlign: TextAlign.start,
+                                        maxLines: 3),
+                                  ),
+                                  SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                        child: Text(widget.video.owner.username,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.purple[800]),
+                                            textAlign: TextAlign.start,
+                                            maxLines: 3),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SizedBox(
+                                          height: 5.0,
+                                          width: 5.0,
+                                          child: Container(
+                                            width: 2,
+                                            height: 2,
+                                            decoration: BoxDecoration(
+                                              color: Colors.purple[800],
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        child: Text("$views views",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.black),
+                                            textAlign: TextAlign.start,
+                                            maxLines: 3),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-                    HeaderSection(title: "Recently Videos", route: " "),
-                    Container(
-                      child: BlocBuilder<VideoBloc, VideoState>(
-                          builder: (context, state) {
-                        if (state is VideoFailure) {
-                          return Center(
-                            child: Text('failed to fetch Videos'),
-                          );
-                        }
-                        if (state is VideoSuccess) {
-                          if (state.latest.isEmpty) {
+                      HeaderSection(title: "Recently Videos", route: " "),
+                      Container(
+                        child: BlocBuilder<VideoBloc, VideoState>(
+                            builder: (context, state) {
+                          if (state is VideoFailure) {
                             return Center(
-                              child: Text('no video found'),
+                              child: Text('failed to fetch Videos'),
                             );
                           }
-                        }
-                        if (state is VideoSuccess) {
-                          return Container(
-                            padding: EdgeInsets.only(top: 10.0),
-                            child: buildVideoListView(
-                                state.latest, state.hasReachedMax),
+                          if (state is VideoSuccess) {
+                            if (state.latest.isEmpty) {
+                              return Center(
+                                child: Text('no video found'),
+                              );
+                            }
+                          }
+                          if (state is VideoSuccess) {
+                            return Container(
+                              padding: EdgeInsets.only(top: 10.0),
+                              child: buildVideoListView(
+                                  state.latest, state.hasReachedMax),
+                            );
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(),
                           );
-                        }
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }),
-                    ),
-                  ],
+                        }),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -263,7 +310,10 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
       itemBuilder: (BuildContext context, int index) {
         return index >= videos.length
             ? BottomLoader()
-            : VideoWidgetRow(video: videos[index], pop: true,);
+            : VideoWidgetRow(
+                video: videos[index],
+                pop: true,
+              );
       },
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

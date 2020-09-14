@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                         builder: (context, state) {
                       if (state is VideoFailure) {
                         return Center(
-                          child: Text('failed to fetch Videos'),
+                          child: Text('Pull down to refresh'),
                         );
                       }
                       if (state is VideoSuccess) {
@@ -255,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                       builder: (context, state) {
                     if (state is VideoFailure) {
                       return Center(
-                        child: Text('failed to fetch Videos'),
+                        child: Text('Pull down to refresh'),
                       );
                     }
                     if (state is VideoSuccess) {

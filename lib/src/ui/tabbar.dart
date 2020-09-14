@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get_ip/get_ip.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
@@ -18,12 +19,12 @@ import 'package:newsapp/src/models/video.dart';
 import 'package:newsapp/src/repository/local_data.dart';
 import 'package:newsapp/src/resources/strings.dart';
 
-
 import 'package:newsapp/src/ui/pages/home_page.dart';
 import 'package:newsapp/src/ui/pages/news_page.dart';
 import 'package:newsapp/src/ui/pages/profile_page.dart';
 import 'package:newsapp/src/ui/pages/search_page.dart';
 import 'package:newsapp/src/ui/pages/video_page.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 class TabScreen extends StatefulWidget {
   final int tabIndex;
@@ -125,22 +126,9 @@ class TabScreenState extends State<TabScreen> {
         var view = message['data']['type'];
         var post = message['data']['post'];
         print("onMessage: $post");
+        _showNotification(message['notification']['title'],
+            message['notification']['body'], view, post);
         _addBadge();
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            content: ListTile(
-              title: Text(message['notification']['title']),
-              subtitle: Text(message['notification']['body']),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
-        );
       },
       onLaunch: (Map<String, dynamic> message) async {
         print('onLaunch: $message');
@@ -150,6 +138,74 @@ class TabScreenState extends State<TabScreen> {
         print('onResume: $message');
         _serialiseAndNavigate(message);
       },
+    );
+  }
+
+  void _showNotification(title, body, view, post) {
+    showOverlayNotification(
+      (context) {
+        print("inside notification ======");
+        return GestureDetector(
+          onTap: () {
+            if (view == 'video') {
+              Video video = Video.fromJson(jsonDecode(post));
+              video.thumbnail = AppStrings.mainURL + video.thumbnail;
+              video.videoLocation = AppStrings.mainURL + video.videoLocation;
+              video.owner.avatar = AppStrings.mainURL + video.owner.avatar;
+              print(video.owner.avatar);
+              OverlaySupportEntry.of(context).dismiss();
+              Navigator.pushNamed(context, '/videodetail', arguments: video);
+              
+            }
+            if (view == 'article') {
+              OverlaySupportEntry.of(context).dismiss();
+              Navigator.pushNamed(context, '/articledetail', arguments: post);
+            }
+            
+          },
+          child: Card(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            child: SafeArea(
+              child: ListTile(
+                leading: SizedBox.fromSize(
+                    size: const Size(40, 40),
+                    child: ClipOval(
+                        child: Container(
+                      color: Colors.purple[800],
+                      child: (view == 'video')
+                          ? Icon(
+                              Icons.video_library,
+                              color: Colors.white,
+                            )
+                          : Icon(
+                              Icons.library_books,
+                              color: Colors.white,
+                            ),
+                    ))),
+                title: Text(title,
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                    textAlign: TextAlign.start,
+                    maxLines: 2),
+                subtitle: Text(body,
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black),
+                    textAlign: TextAlign.start,
+                    maxLines: 2),
+                trailing: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      OverlaySupportEntry.of(context).dismiss();
+                    }),
+              ),
+            ),
+          ),
+        );
+      },
+      duration: Duration(seconds: 10),
     );
   }
 
@@ -177,7 +233,7 @@ class TabScreenState extends State<TabScreen> {
 
   _badgeState() async {
     String appBadgeSupported;
-    
+
     try {
       bool res = await FlutterAppBadger.isAppBadgeSupported();
       if (res) {
@@ -217,10 +273,8 @@ class TabScreenState extends State<TabScreen> {
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     Future<String> userLocal = prefs.getuserData();
     userLocal.then((data) {
-      print("this the data i have" + data.toString());
       UserRespoModel userData =
           UserRespoModel.fromJson(jsonDecode(data.toString()));
-      print("this the data i have" + userData.toString());
       BlocProvider.of<AuthenticationBloc>(context)
           .add(Autheticated(userData: userData));
     }, onError: (e) {

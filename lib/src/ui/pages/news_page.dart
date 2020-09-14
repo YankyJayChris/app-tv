@@ -111,7 +111,7 @@ class _NewsPageState extends State<NewsPage> {
                 height: double.infinity,
                 width: double.infinity,
                 child: Center(
-                  child: Text('failed to fetch Articles'),
+                  child: Text('Pull down to refresh'),
                 ),
               );
             }

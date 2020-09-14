@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:newsapp/src/models/userRepo.dart';
 import 'package:newsapp/src/repository/local_data.dart';
-import 'package:newsapp/src/repository/user_preferences.dart';
 import 'package:newsapp/src/resources/strings.dart';
 
 class UserRepository {
