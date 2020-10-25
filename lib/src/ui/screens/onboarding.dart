@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/src/repository/user_preferences.dart';
 import 'package:sk_onboarding_screen/flutter_onboarding.dart';
 import 'package:sk_onboarding_screen/sk_onboarding_screen.dart';
 
@@ -33,7 +32,7 @@ class OnboardingState extends State<Onboarding> with TickerProviderStateMixin {
         pages: pages,
         skipClicked: (value) {
           print(value);
-          UserPreferences().onBoarding = true;
+
           Navigator.pushNamed(context, '/home');
           _globalKey.currentState.showSnackBar(SnackBar(
             content: Text("Welcom to tv1 prime"),
@@ -41,7 +40,6 @@ class OnboardingState extends State<Onboarding> with TickerProviderStateMixin {
         },
         getStartedClicked: (value) {
           print(value);
-          UserPreferences().onBoarding = true;
           Navigator.pushNamed(context, '/home');
           _globalKey.currentState.showSnackBar(SnackBar(
             content: Text("Get Started clicked"),

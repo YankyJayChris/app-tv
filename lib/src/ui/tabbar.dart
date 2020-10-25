@@ -13,6 +13,8 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:newsapp/src/blocs/auth/bloc.dart';
+import 'package:newsapp/src/blocs/categories/bloc.dart';
+import 'package:newsapp/src/blocs/payment/bloc.dart';
 import 'package:newsapp/src/blocs/video/bloc.dart';
 import 'package:newsapp/src/models/userRepo.dart';
 import 'package:newsapp/src/models/video.dart';
@@ -63,6 +65,8 @@ class TabScreenState extends State<TabScreen> {
   LocalData prefs = LocalData();
   UserRespoModel userData;
   AuthenticationBloc _authenticationBloc;
+  PaymentsBloc _paymentBloc;
+  CategoryBloc _categoryBloc;
 
   final PageStorageBucket bucket = PageStorageBucket();
 
@@ -86,6 +90,8 @@ class TabScreenState extends State<TabScreen> {
 
     pages = [home, search, myNews, myVideos, profile];
     _videoBloc = BlocProvider.of<VideoBloc>(context);
+    _paymentBloc = BlocProvider.of<PaymentsBloc>(context);
+    _categoryBloc = BlocProvider.of<CategoryBloc>(context);
 
     _messaging.subscribeToTopic('news');
     if (Platform.isIOS) {
@@ -97,6 +103,7 @@ class TabScreenState extends State<TabScreen> {
     }
     _checkLogin();
     _saveDeviceToken();
+    // _refreshPaymentPage();
     currentPage = pages[widget.tabIndex];
     currentTab = widget.tabIndex;
     super.initState();
@@ -155,13 +162,11 @@ class TabScreenState extends State<TabScreen> {
               print(video.owner.avatar);
               OverlaySupportEntry.of(context).dismiss();
               Navigator.pushNamed(context, '/videodetail', arguments: video);
-              
             }
             if (view == 'article') {
               OverlaySupportEntry.of(context).dismiss();
               Navigator.pushNamed(context, '/articledetail', arguments: post);
             }
-            
           },
           child: Card(
             margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -190,9 +195,7 @@ class TabScreenState extends State<TabScreen> {
                     textAlign: TextAlign.start,
                     maxLines: 2),
                 subtitle: Text(body,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black),
+                    style: TextStyle(fontSize: 14, color: Colors.black),
                     textAlign: TextAlign.start,
                     maxLines: 2),
                 trailing: IconButton(
@@ -277,10 +280,17 @@ class TabScreenState extends State<TabScreen> {
           UserRespoModel.fromJson(jsonDecode(data.toString()));
       BlocProvider.of<AuthenticationBloc>(context)
           .add(Autheticated(userData: userData));
+          BlocProvider.of<PaymentsBloc>(context)
+        .add(CheckPayStatus(s: userData.data.sessionId, userId: "${userData.data.userId}"));
     }, onError: (e) {
       print(e);
     });
   }
+
+  // Future<Null> _refreshPaymentPage() async {
+  //   BlocProvider.of<PaymentsBloc>(context)
+  //       .add(CheckPayStatus(s: "ahfshdfhdsfds", userId: "3"));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -306,7 +316,7 @@ class TabScreenState extends State<TabScreen> {
                 color: currentTab == 0 ? Colors.purple[800] : Colors.black,
                 size: 23.0,
               ),
-              title: Text(''),
+              title: currentTab == 0 ? Text('Home') : Text('Home'),
             ),
             BottomNavigationBarItem(
               icon: Icon(

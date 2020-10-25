@@ -49,6 +49,7 @@ class UserRepository {
       'phone_number': phoneNumber,
       'password': password,
     };
+    print("am here now $body");
     final res = await http.post(
       AppStrings.primeURL + '?type=phone_login',
       body: body,
@@ -58,8 +59,13 @@ class UserRepository {
       LocalData prefs =  LocalData();
       var myRes = json.decode(res.body);
       UserRespoModel userData = UserRespoModel.fromJson(myRes);
-      prefs.setAuthToken(jsonEncode(userData.data.sessionId));
-      prefs.setuserData(jsonEncode(userData));
+      if(userData.apiStatus == "200"){
+        prefs.setAuthToken(jsonEncode(userData.data.sessionId));
+        prefs.setuserData(jsonEncode(userData));
+      }else{
+        prefs.setAuthToken("");
+        prefs.setuserData("");
+      }
       return userData;
     } else {
       throw Exception('Failed to get user data');

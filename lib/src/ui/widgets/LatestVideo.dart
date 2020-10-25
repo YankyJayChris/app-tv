@@ -13,7 +13,7 @@ class LatestVideoWidget extends StatelessWidget {
       height: MediaQuery.of(context).size.height * (30 / 100),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 5,
+        itemCount: data.length < 5 ? data.length : 5,
         itemBuilder: (ctx, i) => VideoWidgetHor(video: data[i]),
       ),
     );

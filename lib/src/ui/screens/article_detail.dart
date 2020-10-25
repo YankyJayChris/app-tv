@@ -8,7 +8,7 @@ import 'package:html_unescape/html_unescape.dart';
 
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'package:newsapp/src/repository/article_api.dart';
+import 'package:newsapp/src/models/article_api.dart';
 import 'package:newsapp/src/resources/strings.dart';
 
 
@@ -58,9 +58,13 @@ class ArticleDetailScreenState extends State<ArticleDetailScreen> {
       body: Container(
         margin: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
         child: SingleChildScrollView(
-          child: HtmlTextView(
-            data: "${unescape.convert(post.orginalText)}",
-            anchorColor: Colors.purple[800],
+          child: Column(
+            children: [
+              HtmlTextView(
+                data: "${unescape.convert(post.orginalText)}",
+                anchorColor: Colors.purple[800],
+              ),
+            ],
           ),
         ),
       ),

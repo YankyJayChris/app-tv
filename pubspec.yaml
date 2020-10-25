@@ -62,13 +62,14 @@ dependencies:
   splashscreen: ^1.2.0
   get_ip: ^0.4.0
   overlay_support: ^1.0.5
+  validators: ^2.0.0+1
+  cached_network_image: ^2.2.0+1
   # flutter_html: ^1.0.2
   # open_url: ^1.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
 
 flutter_icons:
   android: "launcher_icon"
@@ -80,7 +81,6 @@ flutter_icons:
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

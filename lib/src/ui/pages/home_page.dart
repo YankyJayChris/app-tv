@@ -33,10 +33,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Null> _refreshPage() async {
-    BlocProvider.of<ArticleBloc>(context)
-                                  .add(ArticleRefresh());
-    BlocProvider.of<VideoBloc>(context)
-                                  .add(VideoRefresh());
+    BlocProvider.of<ArticleBloc>(context).add(ArticleRefresh());
+    BlocProvider.of<VideoBloc>(context).add(VideoRefresh());
   }
 
   @override
@@ -162,7 +160,9 @@ class _HomePageState extends State<HomePage> {
                                 _currentIndex = index;
                               });
                             },
-                            itemCount: 5,
+                            itemCount: state.latest.length < 5
+                                ? state.latest.length
+                                : 5,
                             itemBuilder: (BuildContext context, int itemIndex) {
                               List<Video> latest = state.latest;
                               return TopBanner(video: latest[itemIndex]);
@@ -174,23 +174,45 @@ class _HomePageState extends State<HomePage> {
                     }),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [0, 1, 2, 3, 4].map((i) {
-                    int index = i;
-                    return Container(
-                      width: 8.0,
-                      height: 8.0,
-                      margin:
-                          EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _currentIndex == index
-                            ? Colors.purple[800]
-                            : Color.fromRGBO(0, 0, 0, 0.4),
-                      ),
+                Container(
+                  child: BlocBuilder<VideoBloc, VideoState>(
+                      builder: (context, state) {
+                    if (state is VideoFailure) {
+                      return Center(
+                        child: Container(),
+                      );
+                    }
+                    if (state is VideoSuccess) {
+                      if (state.latest.isEmpty) {
+                        return Center(
+                          child: Text('no video found'),
+                        );
+                      }
+                    }
+                    if (state is VideoSuccess) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(state.latest.length, (i) {
+                          int index = i;
+                          return Container(
+                            width: 8.0,
+                            height: 8.0,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 2.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: _currentIndex == index
+                                  ? Colors.purple[800]
+                                  : Color.fromRGBO(0, 0, 0, 0.4),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    }
+                    return Center(
+                      child: Container(),
                     );
-                  }).toList(),
+                  }),
                 ),
                 // HeaderSection(title: "Category", route: "category"),
                 CategoriesWidget(),
@@ -200,34 +222,9 @@ class _HomePageState extends State<HomePage> {
                   child: BlocBuilder<ArticleBloc, ArticleState>(
                       builder: (context, state) {
                     if (state is ArticleFailure) {
-                      return Container(
-                        height: double.infinity,
-                        width: double.infinity,
-                        child: Container(
-                          width: 45,
-                          height: 45,
-                          child: FlatButton(
-                            color: Colors.purple[800],
-                            textColor: Colors.white,
-                            disabledColor: Colors.grey,
-                            disabledTextColor: Colors.black,
-                            padding: EdgeInsets.all(8.0),
-                            splashColor: Colors.green[700],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            onPressed: () {
-                              /*...*/
-                              BlocProvider.of<ArticleBloc>(context)
-                                  .add(ArticleRefresh());
-                            },
-                            child: Text(
-                              "Logout",
-                              style: TextStyle(fontSize: 18.0),
-                            ),
-                          ),
-                        ),
-                      );
+                      return Center(
+                        child: Text('Pull down to refresh'),
+                      );;
                     }
                     if (state is ArticleSuccess) {
                       if (state.articles.isEmpty) {

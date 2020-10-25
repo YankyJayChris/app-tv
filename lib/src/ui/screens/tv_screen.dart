@@ -182,7 +182,7 @@ class _TvScreenState extends State<TvScreen> {
                               child: CircularProgressIndicator(),
                             );
                           })),
-                      HeaderSection(title: "Latest News", route: " "),
+                      HeaderSection(title: "Latest Video", route: " "),
                       Container(
                         height: MediaQuery.of(context).size.height * (30 / 100),
                         child: BlocBuilder<VideoBloc, VideoState>(

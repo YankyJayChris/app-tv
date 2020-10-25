@@ -1,6 +1,6 @@
 
 import 'package:equatable/equatable.dart';
-  import 'package:meta/meta.dart';
+import 'package:meta/meta.dart';
 import 'package:newsapp/src/models/userRepo.dart';
 
   @immutable
@@ -20,10 +20,10 @@ import 'package:newsapp/src/models/userRepo.dart';
     final String phoneNumber;
     final String password;
 
-    LoggedIn({@required this.phoneNumber,@required this.password }) : super([phoneNumber,password]);
+    LoggedIn({@required this.phoneNumber,@required this.password}) : super([phoneNumber,password]);
 
     @override
-    String toString() => 'LoggedIn { data: $phoneNumber and $password }';
+    String toString() => 'LoggedIn { data: $phoneNumber and $password}';
 
     @override
     List<Object> get props => [phoneNumber,password];

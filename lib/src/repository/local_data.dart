@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalData {
@@ -6,6 +8,7 @@ class LocalData {
   final String subNot = "subNot";
   final String subNotNumber = "subNotNumber";
   final String welcom = "welcom";
+  final String payData = "paydata";
 
 //set data into shared preferences like this
   Future<void> setAuthToken(String token) async {
@@ -31,7 +34,7 @@ class LocalData {
   Future<String> getuserData() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     String myUser;
-    myUser = pref.getString(this.userData) ?? null;
+    myUser = pref.getString(this.userData) ?? "";
     return myUser;
   }
 
@@ -48,6 +51,7 @@ class LocalData {
     subtonot = pref.getBool(this.subNot) ?? true;
     return subtonot;
   }
+
   //set data userdata in sharedpreference
   Future<void> setsubNotNumber(int data) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -61,17 +65,33 @@ class LocalData {
     subtonot = pref.getInt(this.subNotNumber) ?? 0;
     return subtonot;
   }
+
   //set data userdata in sharedpreference
   Future<void> setWelcom(bool data) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool(this.welcom, data);
   }
 
-//get data userdata in sharedpreference
+  //get data userdata in sharedpreference
   Future<bool> getWelcom() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     bool subtonot;
     subtonot = pref.getBool(this.welcom) ?? false;
+    return subtonot;
+  }
+
+  //set data Payata in sharedpreference
+  Future<void> setPayData(String data) async {
+    print("am here in set payments");
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(this.payData, data);
+  }
+
+  //get data Paydata in sharedpreference
+  Future<String> getPayData() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    String subtonot;
+    subtonot = pref.getString(this.payData) ?? "";
     return subtonot;
   }
 }

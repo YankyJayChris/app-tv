@@ -129,11 +129,7 @@ class _SearchPageState extends State<SearchPage> {
                 hintStyle: TextStyle(color: Colors.white)),
           ),
         ),
-        body: Column(
-          children: [
-            buildBody(context),
-          ],
-        ));
+        body: buildBody(context));
   }
 
   Widget buildBody(BuildContext context) {

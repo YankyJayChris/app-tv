@@ -74,7 +74,7 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
         '?type=fetch_articles&offset=$startIndex&limit=$limit');
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      print(data);
+      // print(data);
       List<Article> articles = ApiResultModel.fromJson(data).data;
       return articles;
     } else {

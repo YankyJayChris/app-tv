@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:newsapp/src/repository/user_repository.dart';
+import 'package:newsapp/src/ui/pages/edit_user_detail.dart';
 import 'package:newsapp/src/ui/pages/search_page.dart';
 import 'package:newsapp/src/ui/screens/article_detail.dart';
+import 'package:newsapp/src/ui/screens/checkout_page.dart';
 import 'package:newsapp/src/ui/screens/intro_page.dart';
-import 'package:newsapp/src/ui/screens/new_onboarding.dart';
+import 'package:newsapp/src/ui/screens/momo_number.dart';
 // import 'package:newsapp/src/ui/screens/login_page.dart';
-import 'package:newsapp/src/ui/screens/onboarding.dart';
 import 'package:newsapp/src/ui/screens/otp_page_news.dart';
 import 'package:newsapp/src/ui/screens/phone_login.dart';
 import 'package:newsapp/src/ui/screens/radio_screen.dart';
@@ -15,6 +16,7 @@ import 'package:newsapp/src/ui/screens/take_video.dart';
 import 'package:newsapp/src/ui/screens/trending_screen.dart';
 import 'package:newsapp/src/ui/screens/tv_screen.dart';
 import 'package:newsapp/src/ui/auth/signup_page.dart';
+import 'package:newsapp/src/ui/screens/waiting_page.dart';
 import 'package:newsapp/src/ui/tabbar.dart';
 
 import '../ui/screens/video_detail.dart';
@@ -56,6 +58,14 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => IntroPage());
       case '/otpPage':
         return MaterialPageRoute(builder: (_) => OtpPagenew(mobileNumber: args));
+      case '/cart':
+        return MaterialPageRoute(builder: (_) => CheckoutOnePage());
+      case '/editProfile':
+        return MaterialPageRoute(builder: (_) => EditUser());
+      case '/momowaiting':
+        return MaterialPageRoute(builder: (_) => MomoWaiting(data: args));
+      case '/momonumber':
+        return MaterialPageRoute(builder: (_) => MomoNumber(plan: args));
       default:
         return MaterialPageRoute(builder: (_) => TabScreen());
     }

@@ -34,18 +34,19 @@ class AuthenticationBloc
     AuthenticationEvent event,
   ) async* {
     if (event is Uninitialized) {
-      yield Loading();
+      yield AuthLoading();
       UserRespoModel userData;
       Future<String> userLocal = prefs.getuserData();
       userLocal.then((data) {
-        print("this the data i have" + data.toString());
+        print("***************this the data i have******************" + data.toString());
         userData = UserRespoModel.fromJson(jsonDecode(data.toString()));
       }, onError: (e) {
         print(e);
       });
 
       if (userData.apiStatus == "200") {
-        print("==========> we got data now <===========");
+        print(
+            "==========> we got data now nononnononononono${userData.apiStatus}<===========");
         yield Authenticated(userData: userData);
       } else {
         print("==========> no data found <===========");
@@ -55,11 +56,11 @@ class AuthenticationBloc
 
     if (event is LoggedIn) {
       prefs.setuserData("");
-      yield Loading();
+      yield AuthLoading();
 
       UserRespoModel userData = await UserRepository.loginOnBackend(
         phoneNumber: event.phoneNumber,
-        password: event.phoneNumber,
+        password: event.password,
       );
       if (userData.apiStatus == "200") {
         prefs.setuserData(jsonEncode(userData));
@@ -77,7 +78,7 @@ class AuthenticationBloc
     }
 
     if (event is LoggedOut) {
-      yield Loading();
+      yield AuthLoading();
       prefs.setuserData("");
       yield Unauthenticated();
     }

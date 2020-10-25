@@ -1,9 +1,9 @@
-
 import 'package:custom_switch/custom_switch.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:newsapp/src/blocs/auth/bloc.dart';
+import 'package:newsapp/src/blocs/payment/bloc.dart';
 import 'package:newsapp/src/models/user.dart';
 import 'package:newsapp/src/models/userRepo.dart';
 import 'package:newsapp/src/repository/local_data.dart';
@@ -40,6 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }, onError: (e) {
       print(e);
     });
+    // print(userData.userData.avatar);
   }
 
   @override
@@ -67,20 +68,21 @@ class _ProfilePageState extends State<ProfilePage> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/sendvideo');
+                    Navigator.pushNamed(context, '/editProfile');
                   },
                   child: Icon(
-                    Icons.videocam,
+                    Icons.edit,
                     color: Colors.black,
                   ),
                 ),
                 SizedBox(width: 15),
-                GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/searchpage');
-                    },
-                    child: Icon(Icons.search, color: Colors.black)),
-                SizedBox(width: 15),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.pushNamed(context, '/searchpage');
+                //   },
+                //   child: Icon(Icons.search, color: Colors.black),
+                // ),
+                // SizedBox(width: 15),
                 // GestureDetector(
                 //   onTap: () {},
                 //   child: Image.asset(
@@ -129,6 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
         body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
             builder: (context, state) {
           if (state is Authenticated) {
+            print(state.userData.userData.avatar);
             return profileWithData(context, state.userData.userData, subNot);
           }
           if (state is Unauthenticated) {
@@ -137,7 +140,7 @@ class _ProfilePageState extends State<ProfilePage> {
           if (state is Uninitialized) {
             return CanLogin();
           }
-          if (state is Loading) {
+          if (state is AuthLoading) {
             return Center(
               child: CircularProgressIndicator(),
             );
@@ -178,7 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         color: Colors.purple[800],
                         image: DecorationImage(
                           image: NetworkImage(
-                              AppStrings.mainURL + "${mydata.avatar}"),
+                              "${AppStrings.mainURL}${mydata.avatar}"),
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(50.0)),
@@ -216,25 +219,63 @@ class _ProfilePageState extends State<ProfilePage> {
                 Container(
                   width: MediaQuery.of(context).size.width - 40,
                   height: 45,
-                  child: FlatButton(
-                    color: Colors.purple[800],
-                    textColor: Colors.white,
-                    disabledColor: Colors.grey,
-                    disabledTextColor: Colors.black,
-                    padding: EdgeInsets.all(8.0),
-                    splashColor: Colors.green[700],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    onPressed: () {
-                      /*...*/
-                      BlocProvider.of<AuthenticationBloc>(context)
-                          .add(LoggedOut());
+                  child: BlocBuilder<PaymentsBloc, PaymentState>(
+                    builder: (context, state) {
+                      if (state is PaymentFailure) {
+                        return FlatButton(
+                          color: Colors.purple[800],
+                          textColor: Colors.white,
+                          disabledColor: Colors.grey,
+                          disabledTextColor: Colors.black,
+                          padding: EdgeInsets.all(8.0),
+                          splashColor: Colors.green[700],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          onPressed: () {
+                            /*...*/
+                            Navigator.pushNamed(context, '/cart',
+                                arguments: mydata);
+                          },
+                          child: Text(
+                            "Get premium - 300 RWF/mon",
+                            style: TextStyle(fontSize: 18.0),
+                          ),
+                        );
+                      } else if (state is PaymentSuccess) {
+                        return Text(
+                          state.payData.message,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        );
+                      }
+
+                      return FlatButton(
+                          color: Colors.purple[800],
+                          textColor: Colors.white,
+                          disabledColor: Colors.grey,
+                          disabledTextColor: Colors.black,
+                          padding: EdgeInsets.all(8.0),
+                          splashColor: Colors.green[700],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          onPressed: () {
+                            /*...*/
+                            Navigator.pushNamed(context, '/cart',
+                                arguments: mydata);
+                          },
+                          child: Text(
+                            "Get premium - 300 RWF/mon",
+                            style: TextStyle(fontSize: 18.0),
+                          ),
+                        );
+                      // return Center(
+                      //   child: CircularProgressIndicator(),
+                      // );
                     },
-                    child: Text(
-                      "Logout",
-                      style: TextStyle(fontSize: 18.0),
-                    ),
                   ),
                 ),
               ],
@@ -262,6 +303,33 @@ class _ProfilePageState extends State<ProfilePage> {
                 buildSwicher('Notifications', subNot),
                 SizedBox(height: 8.0),
                 // buildprofileDetail('Favolite writers', "4"),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width - 40,
+                    height: 45,
+                    child: FlatButton(
+                      color: Colors.purple[800],
+                      textColor: Colors.white,
+                      disabledColor: Colors.grey,
+                      disabledTextColor: Colors.black,
+                      padding: EdgeInsets.all(8.0),
+                      splashColor: Colors.green[700],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      onPressed: () {
+                        /*...*/
+                        BlocProvider.of<AuthenticationBloc>(context)
+                            .add(LoggedOut());
+                      },
+                      child: Text(
+                        "Logout",
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -326,7 +394,7 @@ class _ProfilePageState extends State<ProfilePage> {
               onChanged: (value) {
                 print("VALUE : $value");
                 setState(() {
-                    subNot = value;
+                  subNot = value;
                 });
                 prefs.setsubNot(subNot);
                 if (value == true) {

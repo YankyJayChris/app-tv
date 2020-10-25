@@ -1,4 +1,4 @@
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:newsapp/src/blocs/auth/bloc.dart';
@@ -32,6 +32,7 @@ class OtpPagenew extends StatefulWidget {
 
 class _OtpPagenewState extends State<OtpPagenew> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseMessaging _messaging = FirebaseMessaging();
   String text = '';
   AuthenticationBloc _authenticationBloc;
 
@@ -41,6 +42,7 @@ class _OtpPagenewState extends State<OtpPagenew> {
   @override
   void initState() {
     super.initState();
+
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _onVerifyCode();
   }
@@ -52,6 +54,7 @@ class _OtpPagenewState extends State<OtpPagenew> {
   }
 
   void _onVerifyCode() async {
+    
     setState(() {
       isCodeSent = true;
     });
@@ -226,6 +229,7 @@ class ConfirmButton extends StatelessWidget {
 
   final String text;
   final String verificationId;
+
 
   @override
   Widget build(BuildContext context) {
