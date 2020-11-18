@@ -62,14 +62,34 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/sendvideo');
+                    Navigator.pushNamed(context, '/tv');
                   },
                   child: Icon(
-                    Icons.videocam,
+                    Icons.live_tv,
                     color: Colors.black,
                   ),
                 ),
                 SizedBox(width: 15),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/radio');
+                  },
+                  child: Icon(
+                    Icons.radio,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(width: 15),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.pushNamed(context, '/sendvideo');
+                //   },
+                //   child: Icon(
+                //     Icons.videocam,
+                //     color: Colors.black,
+                //   ),
+                // ),
+                // SizedBox(width: 15),
                 GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/searchpage');
@@ -224,7 +244,7 @@ class _HomePageState extends State<HomePage> {
                     if (state is ArticleFailure) {
                       return Center(
                         child: Text('Pull down to refresh'),
-                      );;
+                      );
                     }
                     if (state is ArticleSuccess) {
                       if (state.articles.isEmpty) {

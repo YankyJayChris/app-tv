@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:newsapp/src/models/check_payment.dart';
-import 'package:newsapp/src/repository/local_data.dart';
+import 'package:newsapp/src/repository/new_local.dart';
 import 'package:newsapp/src/repository/payment_repository.dart';
 import 'bloc.dart';
 
@@ -12,7 +12,8 @@ import 'package:rxdart/rxdart.dart';
 
 class PaymentsBloc extends Bloc<PaymentsEvent, PaymentState> {
   final http.Client httpClient;
-  LocalData prefs = LocalData();
+  // LocalData prefs = LocalData();
+  LocalStorageService _localStorageService = LocalStorageService(localStorageRepository: LocalStorageRepository("prime.json"));
 
   PaymentsBloc({@required this.httpClient}) : super(PaymentInitial());
 
@@ -34,14 +35,16 @@ class PaymentsBloc extends Bloc<PaymentsEvent, PaymentState> {
     if (event is PaymentUninitialized) {
       yield PaymentLoading();
       CheckPaymentRepo paymentData;
-      Future<String> paymentLocal = prefs.getPayData();
-      paymentLocal.then((data) {
-        print("***************this the data i have paypaypaypay******************" +
-            data.toString());
-        paymentData = CheckPaymentRepo.fromJson(jsonDecode(data.toString()));
-      }, onError: (e) {
-        print(e);
-      });
+      // Future<String> paymentLocal = prefs.getPayData();
+      // paymentLocal.then((data) {
+      //   print("***************this the data i have paypaypaypay******************" +
+      //       data.toString());
+      //   paymentData = CheckPaymentRepo.fromJson(jsonDecode(data.toString()));
+      // }, onError: (e) {
+      //   print(e);
+      // });
+      Future<String> paymentLocal = _localStorageService.getpayData();
+      paymentData = CheckPaymentRepo.fromJson(jsonDecode(paymentLocal.toString()));
 
       if (paymentData.apiStatus == "200") {
         print(
@@ -55,20 +58,24 @@ class PaymentsBloc extends Bloc<PaymentsEvent, PaymentState> {
     }
 
     if (event is PaymentDone) {
-      prefs.setPayData("");
+      // prefs.setPayData("");
+      await _localStorageService.removeFromStorage("paydata");
       yield PaymentLoading();
 
       CheckPaymentRepo paymentData = event.paymentData;
 
       if (paymentData.apiStatus == "200") {
-        prefs.setPayData(jsonEncode(paymentData));
-        print("=========  am here in bloc: " + jsonEncode(paymentData));
-        Future<String> paymentLocal = prefs.getuserData();
-        paymentLocal.then((data) {
-          print("get from pref:" + data.toString());
-        }, onError: (e) {
-          print(e);
-        });
+        // prefs.setPayData(jsonEncode(paymentData));
+        await _localStorageService.savepayData(jsonEncode(paymentData.toString()));
+        print("=========  am here in Paymentbloc: " + jsonEncode(paymentData));
+        // Future<String> paymentLocal = prefs.getuserData();
+        // paymentLocal.then((data) {
+        //   print("get from pref:" + data.toString());
+        // }, onError: (e) {
+        //   print(e);
+        // });
+        Future<String> paymentLocal = _localStorageService.getpayData();
+        paymentData = CheckPaymentRepo.fromJson(jsonDecode(paymentLocal.toString()));
         yield PaymentSuccess(payData: paymentData);
       } else {
         yield PaymentFailure(
@@ -78,7 +85,8 @@ class PaymentsBloc extends Bloc<PaymentsEvent, PaymentState> {
 
     if (event is PaymentFished) {
       yield PaymentLoading();
-      prefs.setPayData("");
+      // prefs.setPayData("");
+      await _localStorageService.removeFromStorage("paydata");
       yield PaymentFailure(
             message: "Your current subscription has finished");
     }
@@ -89,8 +97,10 @@ class PaymentsBloc extends Bloc<PaymentsEvent, PaymentState> {
         userId: event.userId,
         s: event.s
       );
+      print("==========> CheckPayStatus Paymentbloc ${payData.toString()}<===========");
       if (payData.apiStatus == "200") {
-        print("==========> we got data now <===========");
+        await _localStorageService.savepayData(jsonEncode(payData.toString()));
+        print("==========> we got data now Paymentbloc ${payData.toString()}<===========");
         yield PaymentSuccess(payData: payData);
       } else {
         print("==========> no data found <===========");

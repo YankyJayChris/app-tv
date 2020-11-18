@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/article/bloc.dart';
-import 'package:newsapp/src/models/article.dart';
+import 'package:newsapp/src/blocs/video/bloc.dart';
+import 'package:newsapp/src/models/video.dart';
 import 'package:newsapp/src/ui/widgets/bottom_loder.dart';
 import 'package:newsapp/src/ui/widgets/header_section.dart';
-import 'package:newsapp/src/ui/widgets/recommended_news.dart';
-import 'package:newsapp/src/ui/widgets/vertical_items.dart';
+import 'package:newsapp/src/ui/widgets/video_card_col.dart';
+import 'package:newsapp/src/ui/widgets/video_row_card.dart';
 
-class AllArticles extends StatefulWidget {
+class VideoPage extends StatefulWidget {
+  VideoPage({Key key}) : super(key: key);
+
   @override
-  _AllArticlesState createState() => _AllArticlesState();
+  _VideoPageState createState() => _VideoPageState();
 }
 
-class _AllArticlesState extends State<AllArticles> {
+class _VideoPageState extends State<VideoPage> {
   final _scrollController = ScrollController(initialScrollOffset: 0.0);
   final _scrollThreshold = 200.0;
-  ArticleBloc _articleBloc;
+  VideoBloc _videoBloc;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    _articleBloc = BlocProvider.of<ArticleBloc>(context);
+    _videoBloc = BlocProvider.of<VideoBloc>(context);
   }
 
   @override
@@ -34,12 +36,12 @@ class _AllArticlesState extends State<AllArticles> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _articleBloc.add(ArticleFetched());
+      _videoBloc.add(VideoFetched());
     }
   }
 
   Future<Null> _refreshPage() async {
-    BlocProvider.of<ArticleBloc>(context).add(ArticleRefresh());
+    BlocProvider.of<VideoBloc>(context).add(VideoRefresh());
   }
 
   @override
@@ -68,26 +70,6 @@ class _AllArticlesState extends State<AllArticles> {
         actions: <Widget>[
           Row(
             children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/tv');
-                },
-                child: Icon(
-                  Icons.live_tv,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(width: 15),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/radio');
-                },
-                child: Icon(
-                  Icons.radio,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(width: 15),
               GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, '/sendvideo');
@@ -122,9 +104,8 @@ class _AllArticlesState extends State<AllArticles> {
         onRefresh: _refreshPage,
         child: SingleChildScrollView(
           controller: _scrollController,
-          child:
-              BlocBuilder<ArticleBloc, ArticleState>(builder: (context, state) {
-            if (state is ArticleFailure) {
+          child: BlocBuilder<VideoBloc, VideoState>(builder: (context, state) {
+            if (state is VideoFailure) {
               return Container(
                 height: double.infinity,
                 width: double.infinity,
@@ -133,33 +114,35 @@ class _AllArticlesState extends State<AllArticles> {
                 ),
               );
             }
-            if (state is ArticleSuccess) {
-              if (state.articles.isEmpty) {
+            if (state is VideoSuccess) {
+              if (state.latest.isEmpty) {
                 return Container(
                   height: double.infinity,
                   width: double.infinity,
                   child: Center(
-                    child: Text('no Articles found'),
+                    child: Text('no video found'),
                   ),
                 );
               }
             }
-            if (state is ArticleSuccess) {
+            if (state is VideoSuccess) {
               return Column(
                 children: <Widget>[
-                  HeaderSection(title: "Latest News", route: "news"),
-                  buildLatestVideo(state.articles),
-                  HeaderSection(title: "Recently News", route: " "),
+                  HeaderSection(title: "Latest Video", route: "news"),
+                  buildLatestVideo(state.latest),
+                  HeaderSection(title: "Recently Videos", route: " "),
                   Container(
                     padding: EdgeInsets.only(top: 10.0),
                     child:
-                        buildVideoListView(state.articles, state.hasReachedMax),
+                        buildVideoListView(state.latest, state.hasReachedMax),
                   ),
                 ],
               );
             }
-            return Center(
-              child: CircularProgressIndicator(),
+            return Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           }),
         ),
@@ -186,26 +169,26 @@ class _AllArticlesState extends State<AllArticles> {
     );
   }
 
-  ListView buildVideoListView(List<Article> articles, bool hasReachedMax) {
+  ListView buildVideoListView(List<Video> videos, bool hasReachedMax) {
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
-        return index >= articles.length
+        return index >= videos.length
             ? BottomLoader()
-            : RowItem(post: articles[index]);
+            : VideoWidgetRow(video: videos[index]);
       },
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: hasReachedMax ? articles.length : articles.length + 1,
+      itemCount: hasReachedMax ? videos.length : videos.length + 1,
     );
   }
 
-  Widget buildLatestVideo(List<Article> articles) {
+  Widget buildLatestVideo(List<Video> videos) {
     return Container(
       height: MediaQuery.of(context).size.height * (30 / 100),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: articles.length < 5 ? articles.length : 5,
-        itemBuilder: (ctx, i) => RecommendedNews(post: articles[i]),
+        itemCount: videos.length < 5 ? videos.length : 5,
+        itemBuilder: (ctx, i) => VideoWidgetHor(video: videos[i]),
       ),
     );
   }

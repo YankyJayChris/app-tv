@@ -64,6 +64,8 @@ dependencies:
   overlay_support: ^1.0.5
   validators: ^2.0.0+1
   cached_network_image: ^2.2.0+1
+  localstorage: ^3.0.3+6
+  in_app_update: ^1.1.14
   # flutter_html: ^1.0.2
   # open_url: ^1.0.1
 
@@ -115,3 +117,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  

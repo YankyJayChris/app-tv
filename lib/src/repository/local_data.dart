@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -82,7 +81,7 @@ class LocalData {
 
   //set data Payata in sharedpreference
   Future<void> setPayData(String data) async {
-    print("am here in set payments");
+    print("am here in set payments $data");
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(this.payData, data);
   }

@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-import 'package:newsapp/src/blocs/article/bloc.dart';
 import 'package:newsapp/src/blocs/categories/bloc.dart';
 import 'package:newsapp/src/models/category.dart';
 import 'package:rxdart/rxdart.dart';

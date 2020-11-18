@@ -9,7 +9,7 @@ import 'package:newsapp/src/resources/strings.dart';
 class PaymentsRepository {
   static Future<MomoResults> momopay(
       {String s, String userId, String phoneNumber, String period}) async {
-    print("am here in momo http");
+    print("repo: am here in momo http");
     var body = {
       "s": s,
       "user_id": userId,
@@ -23,14 +23,14 @@ class PaymentsRepository {
     );
 
     if (response.statusCode == 200) {
-      print("again : am here in momo response");
+      print("repo: am here in momo response");
       // print(response.body);
       var data = json.decode(response.body);
       MomoResults momoresult = MomoResults.fromJson(data);
       print("*****DONE MOMO REQUEST**********");
       return momoresult;
     } else {
-      print("again : am in exception plz");
+      print("repo: am in exception plz");
       throw Exception();
     }
   }
@@ -63,31 +63,32 @@ class PaymentsRepository {
 
   static Future<CheckPaymentRepo> checkPayment(
       {String userId, String s}) async {
-    print("am here in check payment http");
+    print("repo: am here in check payment http");
     var body = {
       "user_id": userId,
       "s": s,
     };
-    print("again : $body");
+    print("repo: $body");
     final response = await http.post(
       AppStrings.primeURL + '?type=check_payment',
       body: body,
     );
 
     if (response.statusCode == 200) {
-      print("again : am here in check payment response");
+      print("repo: am here in check payment response");
       print(response.body);
       var data = json.decode(response.body);
       LocalData prefs = LocalData();
       CheckPaymentRepo payment = CheckPaymentRepo.fromJson(data);
       if (payment.apiStatus == "200") {
-        prefs.setPayData(jsonEncode(payment));
+        // prefs.setPayData(jsonEncode(payment));
+        
       } else {
         prefs.setPayData("");
       }
       return payment;
     } else {
-      print("again : am in exception plz");
+      print("repo: am in exception plz");
       throw Exception();
     }
   }

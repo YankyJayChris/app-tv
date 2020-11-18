@@ -22,7 +22,7 @@ class CategoriesWidget extends StatelessWidget {
           children: <Widget>[
             CategoryWidget(title: 'TV', icon: Icons.live_tv, route: "tv",),
             CategoryWidget(title: 'Radio', icon: Icons.radio, route: "radio",),
-            CategoryWidget(title: 'Report News', icon: Icons.present_to_all, route: "sendvideo",),
+            // CategoryWidget(title: 'Report News', icon: Icons.present_to_all, route: "sendvideo",),
             CategoryWidget(title: 'Trending', icon: Icons.insert_chart, route: "trending",),
           ],
         ),

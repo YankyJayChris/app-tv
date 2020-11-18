@@ -31,7 +31,7 @@ class PaymentSuccess extends PaymentState {
 
   @override
   String toString() =>
-      'user loged in { user_data: ${jsonEncode(payData)},';
+      'Payment success in { user_data: ${jsonEncode(payData)},';
 }
 
 class PaymentFailure extends PaymentState {
@@ -54,7 +54,7 @@ class PaymentFailure extends PaymentState {
 
   @override
   String toString() =>
-      'user loged in { message: $message},';
+      'payment failed in { message: $message},';
 }
 
 class Unpayed extends PaymentState {}

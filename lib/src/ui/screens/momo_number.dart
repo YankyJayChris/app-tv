@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -147,20 +148,21 @@ class _MomoNumberState extends State<MomoNumber> {
                                           Timer(Duration(seconds: 10),
                                               () async {
                                             CheckPaymentRepo response =
-                                                await PaymentsRepository.momoStatus(
-                                                    refId: momoData.refId,
-                                                    s: sessionData.sessionId,
-                                                    userId:
-                                                        "${sessionData.userId}");
+                                                await PaymentsRepository
+                                                    .momoStatus(
+                                              refId: momoData.refId,
+                                              s: sessionData.sessionId,
+                                              userId: "${sessionData.userId}",
+                                            );
                                             print(
-                                                "again : ${response.toString()}");
+                                                "again : *****************************${json.encode(response)}");
                                             if (response.apiStatus == "200") {
                                               setState(() {
                                                 loading = false;
                                               });
                                               print("am above payment now");
                                               _paymentBlocBloc.add(PaymentDone(
-                                                      paymentData: response));
+                                                  paymentData: response));
                                               Navigator.pushNamed(
                                                   context, '/home',
                                                   arguments: 4);

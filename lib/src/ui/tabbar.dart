@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:get_ip/get_ip.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:in_app_update/in_app_update.dart';
 
 import 'package:newsapp/src/blocs/auth/bloc.dart';
 import 'package:newsapp/src/blocs/categories/bloc.dart';
@@ -47,9 +48,12 @@ class TabScreenState extends State<TabScreen> {
   final Key keyProfile = PageStorageKey('pageProfile');
   VideoBloc _videoBloc;
   String _ip = 'Unknown';
+  AppUpdateInfo _updateInfo;
+  bool _flexibleUpdateAvailable = false;
 
   final FirebaseMessaging _messaging = FirebaseMessaging();
   final Firestore _db = Firestore.instance;
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   int currentTab = 1;
 
@@ -103,6 +107,7 @@ class TabScreenState extends State<TabScreen> {
     }
     _checkLogin();
     _saveDeviceToken();
+    checkForUpdate();
     // _refreshPaymentPage();
     currentPage = pages[widget.tabIndex];
     currentTab = widget.tabIndex;
@@ -276,15 +281,33 @@ class TabScreenState extends State<TabScreen> {
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     Future<String> userLocal = prefs.getuserData();
     userLocal.then((data) {
+      print(data);
       UserRespoModel userData =
           UserRespoModel.fromJson(jsonDecode(data.toString()));
       BlocProvider.of<AuthenticationBloc>(context)
           .add(Autheticated(userData: userData));
-          BlocProvider.of<PaymentsBloc>(context)
-        .add(CheckPayStatus(s: userData.data.sessionId, userId: "${userData.data.userId}"));
+      BlocProvider.of<PaymentsBloc>(context).add(CheckPayStatus(
+          s: userData.data.sessionId, userId: "${userData.data.userId}"));
     }, onError: (e) {
       print(e);
     });
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> checkForUpdate() async {
+    InAppUpdate.checkForUpdate().then((info) {
+      setState(() {
+        _updateInfo = info;
+      });
+      if(_updateInfo?.updateAvailable == true){
+        InAppUpdate.performImmediateUpdate().catchError((e) => _showError(e));
+      }
+    }).catchError((e) => _showError(e));
+  }
+
+  void _showError(dynamic exception) {
+    _scaffoldKey.currentState
+        .showSnackBar(SnackBar(content: Text(exception.toString())));
   }
 
   // Future<Null> _refreshPaymentPage() async {
@@ -302,6 +325,7 @@ class TabScreenState extends State<TabScreen> {
     }
 
     return Scaffold(
+      key: _scaffoldKey,
       body: currentPage,
       bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: false,

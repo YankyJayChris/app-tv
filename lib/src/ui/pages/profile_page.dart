@@ -66,16 +66,16 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: <Widget>[
             Row(
               children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/editProfile');
-                  },
-                  child: Icon(
-                    Icons.edit,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(width: 15),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.pushNamed(context, '/editProfile');
+                //   },
+                //   child: Icon(
+                //     Icons.edit,
+                //     color: Colors.black,
+                //   ),
+                // ),
+                // SizedBox(width: 15),
                 // GestureDetector(
                 //   onTap: () {
                 //     Navigator.pushNamed(context, '/searchpage');
@@ -221,6 +221,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 45,
                   child: BlocBuilder<PaymentsBloc, PaymentState>(
                     builder: (context, state) {
+                      print(state.toString());
                       if (state is PaymentFailure) {
                         return FlatButton(
                           color: Colors.purple[800],
@@ -253,25 +254,25 @@ class _ProfilePageState extends State<ProfilePage> {
                       }
 
                       return FlatButton(
-                          color: Colors.purple[800],
-                          textColor: Colors.white,
-                          disabledColor: Colors.grey,
-                          disabledTextColor: Colors.black,
-                          padding: EdgeInsets.all(8.0),
-                          splashColor: Colors.green[700],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          onPressed: () {
-                            /*...*/
-                            Navigator.pushNamed(context, '/cart',
-                                arguments: mydata);
-                          },
-                          child: Text(
-                            "Get premium - 300 RWF/mon",
-                            style: TextStyle(fontSize: 18.0),
-                          ),
-                        );
+                        color: Colors.purple[800],
+                        textColor: Colors.white,
+                        disabledColor: Colors.grey,
+                        disabledTextColor: Colors.black,
+                        padding: EdgeInsets.all(8.0),
+                        splashColor: Colors.green[700],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        onPressed: () {
+                          /*...*/
+                          Navigator.pushNamed(context, '/cart',
+                              arguments: mydata);
+                        },
+                        child: Text(
+                          "Get premium - 300 RWF/mon",
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                      );
                       // return Center(
                       //   child: CircularProgressIndicator(),
                       // );
