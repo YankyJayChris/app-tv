@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "108884023295",
+    "firebase_url": "https://tv1-prime.firebaseio.com",
+    "project_id": "tv1-prime",
+    "storage_bucket": "tv1-prime.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:108884023295:android:25c3f2d90ddbc9fe01f9ca",
+        "android_client_info": {
+          "package_name": "rw.prime.radiotv1.tv1app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "108884023295-7ofbqgu8bv8cgffdpjscc7044g2hsj83.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rw.prime.radiotv1.tv1app",
+            "certificate_hash": "fc594b62a58ed3a1e2920a620a0e4d357e4b7a73"
+          }
+        },
+        {
+          "client_id": "108884023295-c014svj4kupvhflqg99qv9e2knuk6hve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhwgM5vianW5K2Ycvs69HgT5Cb98r2Qsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "108884023295-c014svj4kupvhflqg99qv9e2knuk6hve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
