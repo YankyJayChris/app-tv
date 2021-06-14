@@ -1,4 +1,4 @@
-import 'package:newsapp/src/models/video_api_result.dart';
+import '../models/video_api_result.dart';
 
 class VideoApi {
   String apiStatus;
@@ -10,7 +10,9 @@ class VideoApi {
   VideoApi.fromJson(Map<String, dynamic> json) {
     apiStatus = json['api_status'];
     apiVersion = json['api_version'];
-    data = json['data'] != null ? new VideoApiResultModel.fromJson(json['data']) : null;
+    data = json['data'] != null
+        ? new VideoApiResultModel.fromJson(json['data'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {

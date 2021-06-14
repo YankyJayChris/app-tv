@@ -1,19 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:audioplayer/audioplayer.dart';
+import 'package:flutter_exoplayer/audioplayer.dart';
+import 'package:flutter_exoplayer/audio_notification.dart';
 import 'package:flutter/foundation.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/article/bloc.dart';
-import 'package:newsapp/src/blocs/video/bloc.dart';
-import 'package:newsapp/src/models/article.dart';
-import 'package:newsapp/src/ui/widgets/LatestVideo.dart';
-import 'package:newsapp/src/ui/widgets/header_section.dart';
-import 'package:newsapp/src/ui/widgets/recommended_news.dart';
+import '../../../src/blocs/article/bloc.dart';
+import '../../../src/blocs/video/bloc.dart';
+import '../../../src/models/article.dart';
+import '../../../src/ui/widgets/LatestVideo.dart';
+import '../../../src/ui/widgets/header_section.dart';
+import '../../../src/ui/widgets/recommended_news.dart';
 
 var blueColor = Color(0xFF2a7efb);
-
-enum PlayerState { stopped, playing, paused }
 
 class RadioScreen extends StatefulWidget {
   RadioScreen({Key key}) : super(key: key);
@@ -23,89 +23,49 @@ class RadioScreen extends StatefulWidget {
 }
 
 class _RadioScreenState extends State<RadioScreen> {
-  Duration duration;
-  Duration position;
+  final String url = "http://80.241.215.175:5000/";
 
-  String url = "http://80.241.215.175:5000/";
-  AudioPlayer audioPlayer;
+  AudioPlayer _audioPlayer;
 
-  PlayerState playerState = PlayerState.stopped;
+  AudioNotification audioObject = AudioNotification(
+    smallIconFileName: "ic_launcher",
+    title: "Radio 1",
+    subTitle: "Feel it, Live it, Love it",
+    largeIconUrl: "assets/images/logo_44.png",
+    isLocal: false,
+    notificationDefaultActions: NotificationDefaultActions.ALL,
+    notificationCustomActions: NotificationCustomActions.TWO,
+  );
 
-  get isPlaying => playerState == PlayerState.playing;
-  get isPaused => playerState == PlayerState.paused;
-  get isStop => playerState == PlayerState.stopped;
+  PlayerState _playerState = PlayerState.RELEASED;
+  StreamSubscription _playerCompleteSubscription;
+  StreamSubscription _playerErrorSubscription;
+  StreamSubscription _playerStateSubscription;
+  StreamSubscription _playerAudioSessionIdSubscription;
+  StreamSubscription _notificationActionCallbackSubscription;
 
-  bool isMuted = false;
-
-  StreamSubscription _audioPlayerStateSubscription;
+  get _isPlaying => _playerState == PlayerState.PLAYING;
 
   @override
   void initState() {
     super.initState();
-    initAudioPlayer();
+    _initAudioPlayer();
   }
 
   @override
   void dispose() {
-    audioPlayer.stop();
-    _audioPlayerStateSubscription.cancel();
+    _audioPlayer.dispose();
+    _playerCompleteSubscription?.cancel();
+    _playerErrorSubscription?.cancel();
+    _playerStateSubscription?.cancel();
+    _playerAudioSessionIdSubscription?.cancel();
+    _notificationActionCallbackSubscription?.cancel();
     super.dispose();
   }
 
-  void initAudioPlayer() {
-    audioPlayer = AudioPlayer();
-    play();
-    _audioPlayerStateSubscription =
-        audioPlayer.onPlayerStateChanged.listen((s) {
-      if (s == AudioPlayerState.PLAYING) {
-        play();
-      } else if (s == AudioPlayerState.STOPPED) {
-        onComplete();
-      }
-    }, onError: (msg) {
-      setState(() {
-        playerState = PlayerState.stopped;
-      });
-    });
-  }
-
-  Future play() async {
-    await audioPlayer.stop();
-    await audioPlayer.play(url);
-    await audioPlayer.mute(false);
-    setState(() {
-      playerState = PlayerState.playing;
-    });
-  }
-
-  Future pause() async {
-    await audioPlayer.pause();
-    _audioPlayerStateSubscription.cancel();
-    setState(() => playerState = PlayerState.paused);
-  }
-
-  Future stop() async {
-    await audioPlayer.stop();
-    setState(() {
-      playerState = PlayerState.stopped;
-    });
-  }
-
-  Future mute(bool muted) async {
-    await audioPlayer.mute(muted);
-    setState(() {
-      isMuted = muted;
-    });
-  }
-
-  void onComplete() {
-    setState(() => playerState = PlayerState.stopped);
-  }
-
   Future<Null> _refreshPage() async {
-    initAudioPlayer();
-    play();
-    _audioPlayerStateSubscription.cancel();
+    _audioPlayer.dispose();
+    _initAudioPlayer();
   }
 
   @override
@@ -139,8 +99,7 @@ class _RadioScreenState extends State<RadioScreen> {
           Row(
             children: <Widget>[
               GestureDetector(
-                onTap: () {
-                  audioPlayer.stop();
+                onTap: () async {
                   Navigator.pop(context);
                   Navigator.pushNamed(context, '/tv');
                 },
@@ -182,8 +141,7 @@ class _RadioScreenState extends State<RadioScreen> {
                     Container(
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: NetworkImage(
-                                  "https://radiotv1.rw/IMG/arton61.jpg?1568195784"),
+                              image: AssetImage('assets/images/radiologo.png'),
                               fit: BoxFit.cover)),
                     ),
                     Container(
@@ -235,20 +193,16 @@ class _RadioScreenState extends State<RadioScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               IconButton(
-                                onPressed: isPlaying ? () => pause() : null,
+                                onPressed: _isPlaying ? () => _stop() : null,
                                 iconSize: 64.0,
                                 icon: Icon(Icons.stop),
                                 color: Colors.black,
                               ),
                               SizedBox(width: 32.0),
                               GestureDetector(
-                                onTap: () {
-                                  if (isStop || isPaused) {
-                                    play();
-                                  } else {
-                                    pause();
-                                  }
-                                },
+                                onTap: _isPlaying
+                                    ? () => _pause()
+                                    : () => _resume(),
                                 child: Card(
                                   elevation: 5.0,
                                   shape: CircleBorder(),
@@ -261,7 +215,7 @@ class _RadioScreenState extends State<RadioScreen> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Icon(
-                                          isPlaying
+                                          _isPlaying
                                               ? Icons.pause
                                               : Icons.play_arrow,
                                           size: 58.0,
@@ -272,11 +226,12 @@ class _RadioScreenState extends State<RadioScreen> {
                               ),
                               SizedBox(width: 32.0),
                               IconButton(
-                                onPressed:
-                                    isPlaying ? () => mute(!isMuted) : null,
+                                onPressed: _isPlaying ? () => _pause() : null,
                                 iconSize: 64.0,
                                 icon: Icon(
-                                  isMuted ? Icons.volume_up : Icons.volume_off,
+                                  _isPlaying
+                                      ? Icons.volume_off
+                                      : Icons.volume_up,
                                 ),
                                 color: Colors.black,
                               ),
@@ -382,5 +337,83 @@ class _RadioScreenState extends State<RadioScreen> {
         itemBuilder: (ctx, i) => RecommendedNews(post: articles[i]),
       ),
     );
+  }
+
+  void _initAudioPlayer() {
+    _audioPlayer = AudioPlayer();
+    _playerStateSubscription =
+        _audioPlayer.onPlayerStateChanged.listen((playerState) {
+      setState(() {
+        _playerState = playerState;
+        print(_playerState);
+      });
+    });
+    _playerAudioSessionIdSubscription =
+        _audioPlayer.onAudioSessionIdChange.listen((audioSessionId) {
+      print("audio Session Id: $audioSessionId");
+    });
+    _notificationActionCallbackSubscription = _audioPlayer
+        .onNotificationActionCallback
+        .listen((notificationActionName) {
+      //do something
+    });
+    _playerCompleteSubscription =
+        _audioPlayer.onPlayerCompletion.listen((a) {});
+    _play();
+  }
+
+  Future<void> _play() async {
+    if (url != null) {
+      final Result result = await _audioPlayer.play(
+        url,
+        repeatMode: true,
+        respectAudioFocus: false,
+        playerMode: PlayerMode.BACKGROUND,
+        audioNotification: audioObject,
+      );
+      if (result == Result.ERROR) {
+        print("something went wrong in play method :(");
+      }
+    }
+  }
+
+  Future<void> _resume() async {
+    final Result result = await _audioPlayer.resume();
+    if (result == Result.FAIL) {
+      print(
+          "you tried to call audio conrolling methods on released audio player :(");
+    } else if (result == Result.ERROR) {
+      print("something went wrong in resume :(");
+    }
+  }
+
+  Future<void> _pause() async {
+    final Result result = await _audioPlayer.pause();
+    if (result == Result.FAIL) {
+      print(
+          "you tried to call audio conrolling methods on released audio player :(");
+    } else if (result == Result.ERROR) {
+      print("something went wrong in pause :(");
+    }
+  }
+
+  Future<void> _stop() async {
+    final Result result = await _audioPlayer.stop();
+    if (result == Result.FAIL) {
+      print(
+          "you tried to call audio conrolling methods on released audio player :(");
+    } else if (result == Result.ERROR) {
+      print("something went wrong in stop :(");
+    }
+  }
+
+  Future<void> _release() async {
+    final Result result = await _audioPlayer.release();
+    if (result == Result.FAIL) {
+      print(
+          "you tried to call audio conrolling methods on released audio player :(");
+    } else if (result == Result.ERROR) {
+      print("something went wrong in release :(");
+    }
   }
 }

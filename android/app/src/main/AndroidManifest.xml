@@ -14,7 +14,7 @@
         android:allowBackup="false"
         android:usesCleartextTraffic="true"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="TV1 APP"
+        android:label="TV1 PRIME"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"

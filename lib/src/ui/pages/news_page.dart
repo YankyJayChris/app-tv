@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/categories/bloc.dart';
-import 'package:newsapp/src/models/category.dart';
-import 'package:newsapp/src/ui/pages/home_news_widget.dart';
-import 'package:newsapp/src/ui/widgets/news_per_category.dart';
+import '../../../src/blocs/categories/bloc.dart';
+import '../../../src/models/category.dart';
+import '../../../src/ui/pages/home_news_widget.dart';
+import '../../../src/ui/widgets/news_per_category.dart';
 
 class NewsPage extends StatefulWidget {
   NewsPage({Key key}) : super(key: key);
@@ -12,7 +12,7 @@ class NewsPage extends StatefulWidget {
   _NewsPageState createState() => _NewsPageState();
 }
 
-class _NewsPageState extends State<NewsPage> with SingleTickerProviderStateMixin {
+class _NewsPageState extends State<NewsPage> with TickerProviderStateMixin {
   TabController _tabController;
 
   @override
@@ -22,13 +22,13 @@ class _NewsPageState extends State<NewsPage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    
     return Material(
       child: Scaffold(
         body: BlocBuilder<CategoryBloc, CategoriesState>(
           builder: (context, state) {
             if (state is CategoriesSuccess) {
-              _tabController = new TabController(vsync: this, length: state.categories.length);
+              _tabController = new TabController(
+                  vsync: this, length: state.categories.length);
               _tabController.animateTo(0);
               return DefaultTabController(
                 length: state.categories.length,
@@ -85,25 +85,25 @@ class _NewsPageState extends State<NewsPage> with SingleTickerProviderStateMixin
                               Row(
                                 children: <Widget>[
                                   GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, '/tv');
-                                  },
-                                  child: Icon(
-                                    Icons.live_tv,
-                                    color: Colors.black,
+                                    onTap: () {
+                                      Navigator.pushNamed(context, '/tv');
+                                    },
+                                    child: Icon(
+                                      Icons.live_tv,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 15),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, '/radio');
-                                  },
-                                  child: Icon(
-                                    Icons.radio,
-                                    color: Colors.black,
+                                  SizedBox(width: 15),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(context, '/radio');
+                                    },
+                                    child: Icon(
+                                      Icons.radio,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 15),
+                                  SizedBox(width: 15),
                                   // GestureDetector(
                                   //   onTap: () {
                                   //     Navigator.pushNamed(
@@ -180,7 +180,9 @@ class _NewsPageState extends State<NewsPage> with SingleTickerProviderStateMixin
                         bottom: false,
                         child: (category.id == 0)
                             ? HomeBuilderPage()
-                            : CatBuilder(catId:category.langKey ,),
+                            : CatBuilder(
+                                catId: category.langKey,
+                              ),
                       );
                     }).toList(),
                   ),
@@ -195,5 +197,4 @@ class _NewsPageState extends State<NewsPage> with SingleTickerProviderStateMixin
       ),
     );
   }
-
 }

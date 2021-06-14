@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:newsapp/src/blocs/auth/bloc.dart';
-import 'package:newsapp/src/models/user.dart';
-import 'package:newsapp/src/repository/payment_repository.dart';
-import 'package:newsapp/src/ui/widgets/CustomShowDialog.dart';
-import 'package:newsapp/src/ui/widgets/inputPhone.dart';
-import 'package:newsapp/src/ui/widgets/rounded_bordered_container.dart';
+import '../../../src/blocs/auth/bloc.dart';
+import '../../../src/models/user.dart';
+import '../../../src/repository/payment_repository.dart';
+import '../../../src/ui/widgets/CustomShowDialog.dart';
+import '../../../src/ui/widgets/inputPhone.dart';
+import '../../../src/ui/widgets/rounded_bordered_container.dart';
 
 class CheckoutOnePage extends StatefulWidget {
   final UserModel userDta;
@@ -349,19 +349,19 @@ class _CheckoutOnePageState extends State<CheckoutOnePage> {
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
-                              var momoData =
-                                  await PaymentsRepository.momopay(
-                                    s: "${sessionData.sessionId}",
-                                    userId: "${sessionData.userId}",
-                                    phoneNumber: serverNumber,
-                                    period: plan,
-                                  );
-                              if(momoData.apiStatus == "200"){
+                              var momoData = await PaymentsRepository.momopay(
+                                s: "${sessionData.sessionId}",
+                                userId: "${sessionData.userId}",
+                                phoneNumber: serverNumber,
+                                period: plan,
+                              );
+                              if (momoData.apiStatus == "200") {
                                 setState(() {
                                   loading = false;
                                 });
                                 print("results: ${momoData.toString()}");
-                                Navigator.pushNamed(context, '/momowaiting', arguments: {"refId": momoData.refId});
+                                Navigator.pushNamed(context, '/momowaiting',
+                                    arguments: {"refId": momoData.refId});
                               }
                             }
                           },

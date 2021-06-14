@@ -1,4 +1,4 @@
-import 'package:newsapp/src/models/video.dart';
+import '../models/video.dart';
 
 class SearchVideoModel {
   String apiStatus;
@@ -11,7 +11,7 @@ class SearchVideoModel {
     apiStatus = json['api_status'];
     apiVersion = json['api_version'];
     if (json['data'] != null) {
-      data = new List<Video>();
+      data = <Video>[];
       json['data'].forEach((v) {
         data.add(new Video.fromJson(v));
       });

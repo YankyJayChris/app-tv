@@ -12,7 +12,7 @@ class CategoriesRepo {
     apiVersion = json['api_version'];
     message = json['message'];
     if (json['categoryies'] != null) {
-      categoryies = new List<Category>();
+      categoryies = <Category>[];
       json['categoryies'].forEach((v) {
         categoryies.add(new Category.fromJson(v));
       });

@@ -1,16 +1,18 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/article/article_state.dart';
-import 'package:newsapp/src/blocs/article/bloc.dart';
-import 'package:newsapp/src/blocs/video/bloc.dart';
-import 'package:newsapp/src/models/article.dart';
-import 'package:newsapp/src/models/video.dart';
-import 'package:newsapp/src/ui/widgets/categories.dart';
-import 'package:newsapp/src/ui/widgets/header_section.dart';
-import 'package:newsapp/src/ui/widgets/recommended_news.dart';
-import 'package:newsapp/src/ui/widgets/top_banner.dart';
-import 'package:newsapp/src/ui/widgets/LatestVideo.dart';
+import '../../../src/blocs/article/article_state.dart';
+import '../../../src/blocs/article/bloc.dart';
+import '../../../src/blocs/video/bloc.dart';
+import '../../../src/blocs/video_categories/bloc.dart';
+import '../../../src/blocs/categories/bloc.dart';
+import '../../../src/models/article.dart';
+import '../../../src/models/video.dart';
+import '../../../src/ui/widgets/categories.dart';
+import '../../../src/ui/widgets/header_section.dart';
+import '../../../src/ui/widgets/recommended_news.dart';
+import '../../../src/ui/widgets/top_banner.dart';
+import '../../../src/ui/widgets/LatestVideo.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -21,8 +23,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  VideoBloc _videoBloc;
-  ArticleBloc _articleBloc;
+  // VideoBloc _videoBloc;
+  // ArticleBloc _articleBloc;
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -35,6 +37,8 @@ class _HomePageState extends State<HomePage> {
   Future<Null> _refreshPage() async {
     BlocProvider.of<ArticleBloc>(context).add(ArticleRefresh());
     BlocProvider.of<VideoBloc>(context).add(VideoRefresh());
+    BlocProvider.of<CategoryBloc>(context).add(CategoriesRefresh());
+    BlocProvider.of<VidCategoryBloc>(context).add(VidCategoriesRefresh());
   }
 
   @override
@@ -62,6 +66,16 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
+                    Navigator.pushNamed(context, '/camera');
+                  },
+                  child: Icon(
+                    Icons.file_upload,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(width: 15),
+                GestureDetector(
+                  onTap: () {
                     Navigator.pushNamed(context, '/tv');
                   },
                   child: Icon(
@@ -80,16 +94,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(width: 15),
-                // GestureDetector(
-                //   onTap: () {
-                //     Navigator.pushNamed(context, '/sendvideo');
-                //   },
-                //   child: Icon(
-                //     Icons.videocam,
-                //     color: Colors.black,
-                //   ),
-                // ),
-                // SizedBox(width: 15),
                 GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/searchpage');
@@ -166,26 +170,28 @@ class _HomePageState extends State<HomePage> {
                       }
                       if (state is VideoSuccess) {
                         return CarouselSlider.builder(
-                            height:
-                                MediaQuery.of(context).size.height * (30 / 100),
-                            autoPlay: true,
-                            autoPlayInterval: Duration(seconds: 3),
-                            autoPlayAnimationDuration:
-                                Duration(milliseconds: 1000),
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            pauseAutoPlayOnTouch: Duration(seconds: 5),
-                            viewportFraction: 1.0,
-                            onPageChanged: (index) {
-                              setState(() {
-                                _currentIndex = index;
-                              });
-                            },
+                            options: CarouselOptions(
+                              height: MediaQuery.of(context).size.height *
+                                  (30 / 100),
+                              autoPlay: true,
+                              autoPlayInterval: Duration(seconds: 3),
+                              autoPlayAnimationDuration:
+                                  Duration(milliseconds: 1000),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              // pauseAutoPlayOnTouch: Duration(seconds: 5),
+                              viewportFraction: 1.0,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  _currentIndex = index;
+                                });
+                              },
+                            ),
                             itemCount: state.latest.length < 5
                                 ? state.latest.length
                                 : 5,
-                            itemBuilder: (BuildContext context, int itemIndex) {
+                            itemBuilder: (ctx, index, realIdx) {
                               List<Video> latest = state.latest;
-                              return TopBanner(video: latest[itemIndex]);
+                              return TopBanner(video: latest[index]);
                             });
                       }
                       return Center(
@@ -205,14 +211,16 @@ class _HomePageState extends State<HomePage> {
                     if (state is VideoSuccess) {
                       if (state.latest.isEmpty) {
                         return Center(
-                          child: Text('no video found'),
+                          child: Container(),
                         );
                       }
                     }
                     if (state is VideoSuccess) {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(state.latest.length, (i) {
+                        children: List.generate(
+                            state.latest.length < 5 ? state.latest.length : 5,
+                            (i) {
                           int index = i;
                           return Container(
                             width: 8.0,

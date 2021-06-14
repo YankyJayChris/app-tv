@@ -1,4 +1,4 @@
-import 'package:newsapp/src/models/article.dart';
+import '../models/article.dart';
 
 class ArticleApi {
   String apiStatus;

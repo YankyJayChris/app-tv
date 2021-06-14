@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/article/bloc.dart';
-import 'package:newsapp/src/blocs/video/bloc.dart';
-import 'package:newsapp/src/models/article.dart';
-import 'package:newsapp/src/models/video.dart';
-import 'package:newsapp/src/ui/widgets/LatestVideo.dart';
-import 'package:newsapp/src/ui/widgets/bottom_loder.dart';
-import 'package:newsapp/src/ui/widgets/header_section.dart';
-import 'package:newsapp/src/ui/widgets/recommended_news.dart';
-import 'package:newsapp/src/ui/widgets/video_row_card.dart';
+import '../../../src/blocs/article/bloc.dart';
+import '../../../src/blocs/video/bloc.dart';
+import '../../../src/models/article.dart';
+import '../../../src/models/video.dart';
+import '../../../src/ui/widgets/LatestVideo.dart';
+import '../../../src/ui/widgets/bottom_loder.dart';
+import '../../../src/ui/widgets/header_section.dart';
+import '../../../src/ui/widgets/recommended_news.dart';
+import '../../../src/ui/widgets/video_row_card.dart';
 
 class TrendingScreen extends StatefulWidget {
   @override
@@ -86,8 +86,8 @@ class _TrendingScreenState extends State<TrendingScreen> {
             ),
             HeaderSection(title: "Top Videos", route: " "),
             Container(
-              child: BlocBuilder<VideoBloc, VideoState>(
-                  builder: (context, state) {
+              child:
+                  BlocBuilder<VideoBloc, VideoState>(builder: (context, state) {
                 if (state is VideoFailure) {
                   return Center(
                     child: Text('failed to fetch Videos'),
@@ -120,7 +120,7 @@ class _TrendingScreenState extends State<TrendingScreen> {
                 if (state is VideoSuccess) {
                   if (state.latest.isEmpty) {
                     return Center(
-                      child: Text('no video found'),
+                      child: Text('no article found'),
                     );
                   }
                 }

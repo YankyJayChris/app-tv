@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:meta/meta.dart';
-import 'package:newsapp/src/models/check_payment.dart';
-import 'package:newsapp/src/models/userRepo.dart';
+import '../../../src/models/check_payment.dart';
+import '../../../src/models/userRepo.dart';
 
 @immutable
 abstract class PaymentState {}
@@ -53,8 +53,7 @@ class PaymentFailure extends PaymentState {
   List<Object> get props => [message];
 
   @override
-  String toString() =>
-      'payment failed in { message: $message},';
+  String toString() => 'payment failed in { message: $message},';
 }
 
 class Unpayed extends PaymentState {}

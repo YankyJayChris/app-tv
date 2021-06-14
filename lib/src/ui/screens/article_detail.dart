@@ -2,16 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import 'package:newsapp/src/models/models.dart';
+import '../../../src/models/models.dart';
 import 'package:flutter_html_textview_render/html_text_view.dart';
 import 'package:html_unescape/html_unescape.dart';
 
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'package:newsapp/src/models/article_api.dart';
-import 'package:newsapp/src/resources/strings.dart';
-
-
+import '../../../src/models/article_api.dart';
+import '../../../src/resources/strings.dart';
 
 // import 'package:flutter_html/flutter_html.dart';
 // import 'package:flutter_html/html_parser.dart';
@@ -70,10 +68,11 @@ class ArticleDetailScreenState extends State<ArticleDetailScreen> {
       ),
     );
   }
-  FutureBuilder _buildscreen(String postId){
+
+  FutureBuilder _buildscreen(String postId) {
     return FutureBuilder<Article>(
       future: getpost(postId),
-      builder: (BuildContext context, AsyncSnapshot<Article> snapshot){
+      builder: (BuildContext context, AsyncSnapshot<Article> snapshot) {
         if (snapshot.hasData) {
           Article data = snapshot.data;
           return nested(data);
@@ -97,6 +96,7 @@ class ArticleDetailScreenState extends State<ArticleDetailScreen> {
       throw Exception('error fetching articles');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,7 +104,6 @@ class ArticleDetailScreenState extends State<ArticleDetailScreen> {
     );
   }
 }
-
 
 class CenterTitle extends StatelessWidget {
   final String title;
@@ -114,10 +113,10 @@ class CenterTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Getting Article"),
-        ),
-          body: Container(
+      appBar: AppBar(
+        title: Text("Getting Article"),
+      ),
+      body: Container(
           alignment: Alignment.center,
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
@@ -131,7 +130,7 @@ class CenterTitle extends StatelessWidget {
               ),
               Text(
                 title,
-                style: Theme.of(context).textTheme.headline,
+                style: Theme.of(context).textTheme.headline5,
                 textAlign: TextAlign.center,
               ),
             ],
@@ -139,20 +138,20 @@ class CenterTitle extends StatelessWidget {
     );
   }
 }
+
 class CenterIndicator extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Getting Article"),
+      appBar: AppBar(
+        title: Text("Getting Article"),
+      ),
+      body: Container(
+        alignment: Alignment.center,
+        child: Center(
+          child: CircularProgressIndicator(),
         ),
-          body: Container(
-          alignment: Alignment.center,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-    ),);
+      ),
+    );
   }
 }

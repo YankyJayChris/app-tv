@@ -4,11 +4,11 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-import 'package:newsapp/src/blocs/categories/bloc.dart';
-import 'package:newsapp/src/models/category.dart';
+import '../../../src/blocs/categories/bloc.dart';
+import '../../../src/models/category.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:newsapp/src/resources/strings.dart';
+import '../../../src/resources/strings.dart';
 
 class CategoryBloc extends Bloc<CategoriesEvent, CategoriesState> {
   final http.Client httpClient;
@@ -54,13 +54,14 @@ class CategoryBloc extends Bloc<CategoriesEvent, CategoriesState> {
   }
 
   Future<List> _fetchCategories() async {
-    final response = await httpClient.get(AppStrings.primeURL +
-        '?type=get_categories');
+    final response =
+        await httpClient.get(AppStrings.primeURL + '?type=get_categories');
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       print(data);
       List<Category> categories = CategoriesRepo.fromJson(data).categoryies;
-      Category main = Category(id: 0,langKey: "All",english:"Home",type: "category");
+      Category main =
+          Category(id: 0, langKey: "All", english: "Home", type: "category");
       categories.insert(0, main);
       return categories;
     } else {

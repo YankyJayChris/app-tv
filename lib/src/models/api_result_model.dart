@@ -1,4 +1,4 @@
-import 'package:newsapp/src/models/article.dart';
+import '../models/article.dart';
 
 class ApiResultModel {
   String apiStatus;
@@ -14,7 +14,7 @@ class ApiResultModel {
     apiVersion = json['api_version'];
     successType = json['success_type'];
     if (json['data'] != null) {
-      data = new List<Article>();
+      data = <Article>[];
       json['data'].forEach((v) {
         data.add(new Article.fromJson(v));
       });

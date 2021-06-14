@@ -10,9 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:screen/screen.dart';
 
-import 'package:newsapp/src/blocs/video/bloc.dart';
-import 'package:newsapp/src/resources/strings.dart';
-import 'package:newsapp/src/ui/widgets/header_section.dart';
+import '../../../src/blocs/video/bloc.dart';
+import '../../../src/resources/strings.dart';
+import '../../../src/ui/widgets/header_section.dart';
 
 import '../../models/video.dart';
 import '../widgets/bottom_loder.dart';
@@ -36,7 +36,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
   int views = 0;
   double _brightness = 1.0;
 
-
   static const FijkFit cover = FijkFit(
     sizeFactor: 1.0,
     aspectRatio: double.infinity,
@@ -45,7 +44,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
 
   @override
   void initState() {
-    
     setState(() {
       views = widget.video.views;
     });
@@ -73,8 +71,8 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
     var body = json.decode(response.body);
     if (body['video viewed']) {
       setState(() {
-      views = views + 1;
-    });
+        views = views + 1;
+      });
     } else {
       throw Exception('error fetching articles');
     }
@@ -160,8 +158,8 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
         ),
         backgroundColor: Colors.white,
         body: RefreshIndicator(
-        onRefresh: _refreshPage,
-        child: Column(
+          onRefresh: _refreshPage,
+          child: Column(
             children: <Widget>[
               Container(
                 height: MediaQuery.of(context).size.height * (30 / 100),
@@ -192,9 +190,11 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
                               height: 60,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 2),
+                                border:
+                                    Border.all(color: Colors.white, width: 2),
                                 image: DecorationImage(
-                                  image: NetworkImage(widget.video.owner.avatar),
+                                  image:
+                                      NetworkImage(widget.video.owner.avatar),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -203,10 +203,11 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
                               width: 5.0,
                             ),
                             Container(
-                              width:
-                                  MediaQuery.of(context).size.width * (75 / 100),
+                              width: MediaQuery.of(context).size.width *
+                                  (75 / 100),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Container(

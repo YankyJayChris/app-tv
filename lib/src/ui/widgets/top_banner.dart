@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/src/models/video.dart';
+import '../../../src/models/video.dart';
 
 class TopBanner extends StatelessWidget {
-
   final Video video;
 
   TopBanner({this.video});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, '/videodetail', arguments: video);
-          },
-          child: Container(
+      onTap: () {
+        Navigator.pushNamed(context, '/videodetail', arguments: video);
+      },
+      child: Container(
         height: MediaQuery.of(context).size.height * (30 / 100),
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.grey,
           image: DecorationImage(
-            image: NetworkImage(
-                video.thumbnail),
+            image: NetworkImage(video.thumbnail),
             fit: BoxFit.cover,
           ),
         ),
@@ -48,8 +46,7 @@ class TopBanner extends StatelessWidget {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                       image: DecorationImage(
-                        image: NetworkImage(
-                            video.owner.avatar),
+                        image: NetworkImage(video.owner.avatar),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -59,7 +56,10 @@ class TopBanner extends StatelessWidget {
                   ),
                   Text(
                     video.owner.username,
-                    style: TextStyle(color: Colors.white,fontSize: 16,),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ],
               ),
@@ -68,8 +68,7 @@ class TopBanner extends StatelessWidget {
               ),
               Container(
                 // height: 65.0,
-                child: Text(
-                    video.title,
+                child: Text(video.title,
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

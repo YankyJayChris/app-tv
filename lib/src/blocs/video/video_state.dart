@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:newsapp/src/models/video.dart';
+import '../../../src/models/video.dart';
 
 abstract class VideoState extends Equatable {
   const VideoState();

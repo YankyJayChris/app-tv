@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/src/models/article.dart';
-// import 'package:newsapp/wigets/image_disp.dart';
+import '../../../src/models/article.dart';
+// import '../../../wigets/image_disp.dart';
 
 String img2 =
     "http://www.dubaiweek.ae/wp-content/uploads/2017/10/Krusty-The-Cone-1-e1507813664264.jpg";
@@ -15,7 +15,8 @@ class RowItem extends StatelessWidget {
       children: <Widget>[
         GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/articledetail', arguments: "${post.id}");
+            Navigator.pushNamed(context, '/articledetail',
+                arguments: "${post.id}");
           },
           child: Padding(
             padding: const EdgeInsets.all(7.0),

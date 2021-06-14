@@ -1,7 +1,7 @@
 import 'package:custom_switch/custom_switch.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:newsapp/src/repository/local_data.dart';
+import '../../../src/repository/local_data.dart';
 
 class CanLogin extends StatefulWidget {
   @override
@@ -22,6 +22,7 @@ class _CanLoginState extends State<CanLogin> {
       print(e);
     });
   }
+
   @override
   void initState() {
     super.initState();
@@ -93,12 +94,14 @@ class _CanLoginState extends State<CanLogin> {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             children: [
-              buildprofileDetail(context, 'about', "tv1 Prime"),
+              buildAboutsDetail(context, 'about', "tv1 Prime"),
               SizedBox(height: 8.0),
               buildprofileDetail(context, 'terms', "view"),
               SizedBox(height: 30.0),
               buildSwicher('Notifications', subNot),
               SizedBox(height: 8.0),
+              buildAboutsDetail(context, 'About us', "aboutus"),
+              SizedBox(height: 30.0),
             ],
           ),
         ),
@@ -110,6 +113,42 @@ class _CanLoginState extends State<CanLogin> {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, '/searchpage');
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        height: 50.0,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                '$prop:',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                data,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildAboutsDetail(BuildContext context, String prop, String data) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/aboutus');
       },
       child: Container(
         decoration: BoxDecoration(

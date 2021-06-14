@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:meta/meta.dart';
-import 'package:newsapp/src/models/userRepo.dart';
+import '../../../src/models/userRepo.dart';
 
 @immutable
 abstract class AuthenticationState {}
@@ -29,8 +29,7 @@ class Authenticated extends AuthenticationState {
   List<Object> get props => [userData];
 
   @override
-  String toString() =>
-      'user loged in { user_data: ${jsonEncode(userData)},';
+  String toString() => 'user loged in { user_data: ${jsonEncode(userData)},';
 }
 
 class Unauthenticated extends AuthenticationState {}

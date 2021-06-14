@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/src/models/article.dart';
+import '../../../src/models/article.dart';
 
 class RecommendedNews extends StatelessWidget {
   final Article post;
@@ -12,7 +12,8 @@ class RecommendedNews extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, '/articledetail', arguments: "${post.id}");
+          Navigator.pushNamed(context, '/articledetail',
+              arguments: "${post.id}");
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,16 +26,13 @@ class RecommendedNews extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0),
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(
-                    post.image
-                    ),
+                  image: NetworkImage(post.image),
                 ),
               ),
             ),
             Container(
               width: MediaQuery.of(context).size.width * (50 / 100),
-              child: Text(
-                post.title,
+              child: Text(post.title,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -42,7 +40,6 @@ class RecommendedNews extends StatelessWidget {
                   textAlign: TextAlign.start,
                   maxLines: 3),
             ),
-            
             Column(
               children: <Widget>[
                 Row(

@@ -4,12 +4,12 @@
 import 'package:flutter/material.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/article/bloc.dart';
-import 'package:newsapp/src/blocs/video/bloc.dart';
-import 'package:newsapp/src/models/article.dart';
-import 'package:newsapp/src/ui/widgets/header_section.dart';
-import 'package:newsapp/src/ui/widgets/LatestVideo.dart';
-import 'package:newsapp/src/ui/widgets/recommended_news.dart';
+import '../../../src/blocs/article/bloc.dart';
+import '../../../src/blocs/video/bloc.dart';
+import '../../../src/models/article.dart';
+import '../../../src/ui/widgets/header_section.dart';
+import '../../../src/ui/widgets/LatestVideo.dart';
+import '../../../src/ui/widgets/recommended_news.dart';
 
 import 'package:screen/screen.dart';
 
@@ -96,9 +96,8 @@ class _TvScreenState extends State<TvScreen> {
                   onTap: () {
                     player.release();
                     Navigator.pop(context);
-                  Navigator.pushNamed(context, '/radio');
-
-                 },
+                    Navigator.pushNamed(context, '/radio');
+                  },
                   child: Icon(
                     Icons.radio,
                     color: Colors.black,
@@ -107,7 +106,6 @@ class _TvScreenState extends State<TvScreen> {
                 SizedBox(width: 15),
                 GestureDetector(
                     onTap: () {
-                      
                       Navigator.pushNamed(context, '/searchpage');
                     },
                     child: Icon(Icons.search, color: Colors.black)),
@@ -128,7 +126,7 @@ class _TvScreenState extends State<TvScreen> {
         backgroundColor: Colors.white,
         body: RefreshIndicator(
           onRefresh: _refreshPage,
-          child:Column(
+          child: Column(
             children: <Widget>[
               Container(
                 height: MediaQuery.of(context).size.height * (30 / 100),
@@ -152,7 +150,8 @@ class _TvScreenState extends State<TvScreen> {
                     children: <Widget>[
                       HeaderSection(title: "Latest News", route: "news"),
                       Container(
-                          height: MediaQuery.of(context).size.height * (30 / 100),
+                          height:
+                              MediaQuery.of(context).size.height * (30 / 100),
                           child: BlocBuilder<ArticleBloc, ArticleState>(
                               builder: (context, state) {
                             if (state is ArticleFailure) {

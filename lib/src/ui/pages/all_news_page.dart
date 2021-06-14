@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/article/bloc.dart';
-import 'package:newsapp/src/models/article.dart';
-import 'package:newsapp/src/ui/widgets/bottom_loder.dart';
-import 'package:newsapp/src/ui/widgets/header_section.dart';
-import 'package:newsapp/src/ui/widgets/recommended_news.dart';
-import 'package:newsapp/src/ui/widgets/vertical_items.dart';
+import '../../../src/blocs/article/bloc.dart';
+import '../../../src/models/article.dart';
+import '../../../src/ui/widgets/bottom_loder.dart';
+import '../../../src/ui/widgets/header_section.dart';
+import '../../../src/ui/widgets/recommended_news.dart';
+import '../../../src/ui/widgets/vertical_items.dart';
 
 class AllArticles extends StatefulWidget {
   @override

@@ -1,7 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/auth/bloc.dart';
+import '../../../src/blocs/auth/bloc.dart';
 import 'package:numeric_keyboard/numeric_keyboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -54,7 +54,6 @@ class _OtpPagenewState extends State<OtpPagenew> {
   }
 
   void _onVerifyCode() async {
-    
     setState(() {
       isCodeSent = true;
     });
@@ -229,7 +228,6 @@ class ConfirmButton extends StatelessWidget {
 
   final String text;
   final String verificationId;
-
 
   @override
   Widget build(BuildContext context) {

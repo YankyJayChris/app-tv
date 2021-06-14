@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/src/models/video.dart';
+import '../../../src/models/video.dart';
 
 class VideoWidgetHor extends StatelessWidget {
   final Video video;
@@ -26,8 +26,7 @@ class VideoWidgetHor extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                   color: Colors.purple[800],
                   image: DecorationImage(
-                    image: NetworkImage(
-                        video.thumbnail),
+                    image: NetworkImage(video.thumbnail),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -49,12 +48,12 @@ class VideoWidgetHor extends StatelessWidget {
                     children: <Widget>[
                       Container(
                         child: Text(video.duration,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                            color: Colors.white),
-                        textAlign: TextAlign.start,
-                        maxLines: 3),
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.white),
+                            textAlign: TextAlign.start,
+                            maxLines: 3),
                       )
                     ],
                   ),
@@ -68,8 +67,7 @@ class VideoWidgetHor extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    child: Text(
-                        video.title,
+                    child: Text(video.title,
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

@@ -1,4 +1,4 @@
-import 'package:newsapp/src/models/video.dart';
+import '../models/video.dart';
 
 class VideoApiResultModel {
   List<Video> featured;
@@ -10,25 +10,25 @@ class VideoApiResultModel {
 
   VideoApiResultModel.fromJson(Map<String, dynamic> json) {
     if (json['featured'] != null) {
-      featured = new List<Video>();
+      featured = <Video>[];
       json['featured'].forEach((v) {
         featured.add(new Video.fromJson(v));
       });
     }
     if (json['top'] != null) {
-      top = new List<Video>();
+      top = <Video>[];
       json['top'].forEach((v) {
         top.add(new Video.fromJson(v));
       });
     }
     if (json['latest'] != null) {
-      latest = new List<Video>();
+      latest = <Video>[];
       json['latest'].forEach((v) {
         latest.add(new Video.fromJson(v));
       });
     }
     if (json['fav'] != null) {
-      fav = new List<Video>();
+      fav = <Video>[];
       json['fav'].forEach((v) {
         fav.add(new Video.fromJson(v));
       });

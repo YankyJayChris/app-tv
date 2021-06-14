@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:newsapp/src/models/check_payment.dart';
-import 'package:newsapp/src/models/session_data.dart';
-import 'package:newsapp/src/resources/strings.dart';
+import '../../models/check_payment.dart';
+import '../../models/session_data.dart';
+import '../../resources/strings.dart';
 
 class MomoWaiting extends StatefulWidget {
   final Session data;

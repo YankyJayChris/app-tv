@@ -2,13 +2,13 @@ import 'package:custom_switch/custom_switch.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/auth/bloc.dart';
-import 'package:newsapp/src/blocs/payment/bloc.dart';
-import 'package:newsapp/src/models/user.dart';
-import 'package:newsapp/src/models/userRepo.dart';
-import 'package:newsapp/src/repository/local_data.dart';
-import 'package:newsapp/src/resources/strings.dart';
-import 'package:newsapp/src/ui/screens/login_btn.dart';
+import '../../../src/blocs/auth/bloc.dart';
+import '../../../src/blocs/payment/bloc.dart';
+import '../../../src/models/user.dart';
+import '../../../src/models/userRepo.dart';
+import '../../../src/repository/local_data.dart';
+import '../../../src/resources/strings.dart';
+import '../../../src/ui/screens/login_btn.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key}) : super(key: key);
@@ -20,14 +20,12 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   LocalData prefs = LocalData();
   UserRespoModel userData;
-  AuthenticationBloc _authenticationBloc;
   bool subNot = true;
 
   @override
   void initState() {
     super.initState();
     _notification();
-    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
   }
 
   _notification() {
@@ -303,6 +301,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: 30.0),
                 buildSwicher('Notifications', subNot),
                 SizedBox(height: 8.0),
+                buildAboutsDetail(context, 'about', "tv1 Prime"),
+                SizedBox(height: 8.0),
                 // buildprofileDetail('Favolite writers', "4"),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -406,6 +406,42 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildAboutsDetail(BuildContext context, String prop, String data) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/aboutus');
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        height: 50.0,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                '$prop:',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                data,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

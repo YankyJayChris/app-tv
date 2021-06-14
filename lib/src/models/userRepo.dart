@@ -1,4 +1,4 @@
-import 'package:newsapp/src/models/user.dart';
+import '../models/user.dart';
 
 class UserRespoModel {
   String apiStatus;

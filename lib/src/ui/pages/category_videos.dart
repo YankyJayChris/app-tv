@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/video/bloc.dart';
-import 'package:newsapp/src/models/video.dart';
-import 'package:newsapp/src/ui/widgets/bottom_loder.dart';
-import 'package:newsapp/src/ui/widgets/header_section.dart';
-import 'package:newsapp/src/ui/widgets/video_card_col.dart';
-import 'package:newsapp/src/ui/widgets/video_row_card.dart';
+import '../../../src/blocs/video/bloc.dart';
+import '../../../src/models/video.dart';
+import '../../../src/ui/widgets/bottom_loder.dart';
+import '../../../src/ui/widgets/header_section.dart';
+import '../../../src/ui/widgets/video_card_col.dart';
+import '../../../src/ui/widgets/video_row_card.dart';
 
 class CategoryVideosPage extends StatefulWidget {
   CategoryVideosPage({Key key}) : super(key: key);
@@ -50,8 +50,7 @@ class _CategoryVideosPageState extends State<CategoryVideosPage> {
       onRefresh: _refreshPage,
       child: SingleChildScrollView(
         controller: _scrollController,
-        child:
-            BlocBuilder<VideoBloc, VideoState>(builder: (context, state) {
+        child: BlocBuilder<VideoBloc, VideoState>(builder: (context, state) {
           if (state is VideoFailure) {
             return Container(
               height: double.infinity,

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:newsapp/src/models/check_payment.dart';
-import 'package:newsapp/src/models/momo_results.dart';
-import 'package:newsapp/src/repository/local_data.dart';
-import 'package:newsapp/src/resources/strings.dart';
+import '../models/check_payment.dart';
+import '../models/momo_results.dart';
+import '../repository/local_data.dart';
+import '../resources/strings.dart';
 
 class PaymentsRepository {
   static Future<MomoResults> momopay(
@@ -82,7 +82,7 @@ class PaymentsRepository {
       CheckPaymentRepo payment = CheckPaymentRepo.fromJson(data);
       if (payment.apiStatus == "200") {
         // prefs.setPayData(jsonEncode(payment));
-        
+
       } else {
         prefs.setPayData("");
       }

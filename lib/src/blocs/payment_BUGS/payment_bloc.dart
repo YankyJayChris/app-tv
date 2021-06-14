@@ -4,13 +4,13 @@
 // // import 'package:bloc/bloc.dart';
 // // import 'package:http/http.dart' as http;
 // // import 'package:meta/meta.dart';
-// // import 'package:newsapp/src/blocs/Payment/bloc.dart';
-// // import 'package:newsapp/src/blocs/payment/payment_event.dart';
-// // import 'package:newsapp/src/models/check_payment.dart';
-// // import 'package:newsapp/src/models/momo_results.dart';
-// // import 'package:newsapp/src/models/userRepo.dart';
-// // import 'package:newsapp/src/repository/local_data.dart';
-// // import 'package:newsapp/src/repository/payment_repository.dart';
+// // import '../../../src/blocs/Payment/bloc.dart';
+// // import '../../../src/blocs/payment/payment_event.dart';
+// // import '../../../src/models/check_payment.dart';
+// // import '../../../src/models/momo_results.dart';
+// // import '../../../src/models/userRepo.dart';
+// // import '../../../src/repository/local_data.dart';
+// // import '../../../src/repository/payment_repository.dart';
 // // import 'package:rxdart/rxdart.dart';
 
 // // class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
@@ -138,9 +138,9 @@
 // import 'dart:async';
 // import 'dart:convert';
 // import 'package:bloc/bloc.dart';
-// import 'package:newsapp/src/models/check_payment.dart';
-// import 'package:newsapp/src/repository/local_data.dart';
-// import 'package:newsapp/src/repository/payment_repository.dart';
+// import '../../../src/models/check_payment.dart';
+// import '../../../src/repository/local_data.dart';
+// import '../../../src/repository/payment_repository.dart';
 // import './bloc.dart';
 
 // import 'package:http/http.dart' as http;

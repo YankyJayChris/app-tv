@@ -1,21 +1,28 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:newsapp/src/repository/user_repository.dart';
+import '../../../src/repository/user_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'bloc.dart';
 
-
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final UserRepository _userRepository;
-  StreamSubscription subscription;
+  StreamSubscription _subscription;
+
+  StreamSubscription get subscription => _subscription;
+
+  set subscription(StreamSubscription subscription) {
+    _subscription = subscription;
+  }
 
   String verID = "";
 
-  LoginBloc({@required UserRepository userRepository}) : assert(userRepository != null),
-        _userRepository = userRepository, super(InitialLoginState());
+  LoginBloc({@required UserRepository userRepository})
+      : assert(userRepository != null),
+        _userRepository = userRepository,
+        super(InitialLoginState());
 
   @override
   Stream<Transition<LoginEvent, LoginState>> transformEvents(
@@ -63,14 +70,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   @override
   void onEvent(LoginEvent event) {
-    // TODO: implement onEvent
     super.onEvent(event);
     print(event);
   }
 
   @override
   void onError(Object error, StackTrace stacktrace) {
-    // TODO: implement onError
     super.onError(error, stacktrace);
     print(stacktrace);
   }

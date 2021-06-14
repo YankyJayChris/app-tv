@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/video/bloc.dart';
-import 'package:newsapp/src/models/video.dart';
-import 'package:newsapp/src/ui/widgets/bottom_loder.dart';
-import 'package:newsapp/src/ui/widgets/header_section.dart';
-import 'package:newsapp/src/ui/widgets/video_card_col.dart';
-import 'package:newsapp/src/ui/widgets/video_row_card.dart';
+import '../../../src/blocs/video/bloc.dart';
+import '../../../src/blocs/video_categories/bloc.dart';
+import '../../../src/models/video.dart';
+import '../../../src/ui/widgets/bottom_loder.dart';
+import '../../../src/ui/widgets/header_section.dart';
+import '../../../src/ui/widgets/video_card_col.dart';
+import '../../../src/ui/widgets/video_row_card.dart';
 
 class HomeBuilderVideoPage extends StatefulWidget {
   HomeBuilderVideoPage({Key key}) : super(key: key);
@@ -42,6 +43,7 @@ class _HomeBuilderVideoPageState extends State<HomeBuilderVideoPage> {
 
   Future<Null> _refreshPage() async {
     BlocProvider.of<VideoBloc>(context).add(VideoRefresh());
+    BlocProvider.of<VidCategoryBloc>(context).add(VidCategoriesRefresh());
   }
 
   @override
@@ -133,6 +135,8 @@ class _HomeBuilderVideoPageState extends State<HomeBuilderVideoPage> {
         scrollDirection: Axis.horizontal,
         itemCount: videos.length < 5 ? videos.length : 5,
         itemBuilder: (ctx, i) => VideoWidgetHor(video: videos[i]),
+        shrinkWrap: true,
+        // physics: const NeverScrollableScrollPhysics(),
       ),
     );
   }

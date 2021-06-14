@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
-import 'package:newsapp/src/ui/widgets/CustomShowDialog.dart';
+import '../../../src/ui/widgets/CustomShowDialog.dart';
 
 class DialogBox extends StatefulWidget {
   @override
@@ -10,8 +10,6 @@ class DialogBox extends StatefulWidget {
 }
 
 class _DialogBoxState extends State<DialogBox> {
-  
-
   @override
   Widget build(BuildContext context) {
     return Container();

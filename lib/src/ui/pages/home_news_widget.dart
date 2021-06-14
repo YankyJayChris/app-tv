@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/article/bloc.dart';
-import 'package:newsapp/src/models/article.dart';
-import 'package:newsapp/src/ui/widgets/bottom_loder.dart';
-import 'package:newsapp/src/ui/widgets/header_section.dart';
-import 'package:newsapp/src/ui/widgets/recommended_news.dart';
-import 'package:newsapp/src/ui/widgets/vertical_items.dart';
+import '../../../src/blocs/article/bloc.dart';
+import '../../../src/blocs/categories/bloc.dart';
+import '../../../src/models/article.dart';
+import '../../../src/ui/widgets/bottom_loder.dart';
+import '../../../src/ui/widgets/header_section.dart';
+import '../../../src/ui/widgets/recommended_news.dart';
+import '../../../src/ui/widgets/vertical_items.dart';
 
 class HomeBuilderPage extends StatefulWidget {
   HomeBuilderPage({Key key}) : super(key: key);
@@ -42,55 +43,56 @@ class _HomeBuilderPageState extends State<HomeBuilderPage> {
 
   Future<Null> _refreshPage() async {
     BlocProvider.of<ArticleBloc>(context).add(ArticleRefresh());
+    BlocProvider.of<CategoryBloc>(context).add(CategoriesRefresh());
   }
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-        onRefresh: _refreshPage,
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child:
-              BlocBuilder<ArticleBloc, ArticleState>(builder: (context, state) {
-            if (state is ArticleFailure) {
+      onRefresh: _refreshPage,
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        child:
+            BlocBuilder<ArticleBloc, ArticleState>(builder: (context, state) {
+          if (state is ArticleFailure) {
+            return Container(
+              height: double.infinity,
+              width: double.infinity,
+              child: Center(
+                child: Text('Pull down to refresh'),
+              ),
+            );
+          }
+          if (state is ArticleSuccess) {
+            if (state.articles.isEmpty) {
               return Container(
                 height: double.infinity,
                 width: double.infinity,
                 child: Center(
-                  child: Text('Pull down to refresh'),
+                  child: Text('no Articles found'),
                 ),
               );
             }
-            if (state is ArticleSuccess) {
-              if (state.articles.isEmpty) {
-                return Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  child: Center(
-                    child: Text('no Articles found'),
-                  ),
-                );
-              }
-            }
-            if (state is ArticleSuccess) {
-              return Column(
-                children: <Widget>[
-                  HeaderSection(title: "Latest News", route: "news"),
-                  buildLatestVideo(state.articles),
-                  HeaderSection(title: "Recently News", route: " "),
-                  Container(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child:
-                        buildVideoListView(state.articles, state.hasReachedMax),
-                  ),
-                ],
-              );
-            }
-            return Center(
-              child: CircularProgressIndicator(),
+          }
+          if (state is ArticleSuccess) {
+            return Column(
+              children: <Widget>[
+                HeaderSection(title: "Latest News", route: "news"),
+                buildLatestVideo(state.articles),
+                HeaderSection(title: "Recently News", route: " "),
+                Container(
+                  padding: EdgeInsets.only(top: 10.0),
+                  child:
+                      buildVideoListView(state.articles, state.hasReachedMax),
+                ),
+              ],
             );
-          }),
-        ),
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }),
+      ),
     );
   }
 
@@ -133,6 +135,8 @@ class _HomeBuilderPageState extends State<HomeBuilderPage> {
         scrollDirection: Axis.horizontal,
         itemCount: articles.length < 5 ? articles.length : 5,
         itemBuilder: (ctx, i) => RecommendedNews(post: articles[i]),
+        shrinkWrap: true,
+        // physics: const NeverScrollableScrollPhysics(),
       ),
     );
   }

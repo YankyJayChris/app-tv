@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/src/ui/widgets/recommended_news.dart';
+import '../../../src/ui/widgets/recommended_news.dart';
 
 class HomeNews extends StatelessWidget {
   final data;
@@ -13,7 +13,9 @@ class HomeNews extends StatelessWidget {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 5,
-        itemBuilder: (ctx, i) => RecommendedNews(post: null,),
+        itemBuilder: (ctx, i) => RecommendedNews(
+          post: null,
+        ),
       ),
     );
   }

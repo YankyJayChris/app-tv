@@ -1,6 +1,6 @@
-import 'package:newsapp/src/models/api_result_model.dart';
-import 'package:newsapp/src/models/article.dart';
-import "package:newsapp/src/resources/strings.dart";
+import '../models/api_result_model.dart';
+import '../models/article.dart';
+import "../resources/strings.dart";
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

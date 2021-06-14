@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:newsapp/src/models/article.dart';
-
+import '../../../src/models/article.dart';
 
 abstract class ArticleState extends Equatable {
   const ArticleState();

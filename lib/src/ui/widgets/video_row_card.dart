@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/src/models/video.dart';
+import '../../../src/models/video.dart';
 
 class VideoWidgetRow extends StatelessWidget {
   final Video video;

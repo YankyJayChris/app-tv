@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/src/models/edit_user.dart';
-import 'package:newsapp/src/ui/widgets/inputText.dart';
+import '../../../src/models/edit_user.dart';
+import '../../../src/ui/widgets/inputText.dart';
 import 'package:validators/validators.dart' as validator;
 
 class EditUser extends StatefulWidget {
@@ -226,5 +226,3 @@ class _EditUserState extends State<EditUser> {
     );
   }
 }
-
-

@@ -1,4 +1,4 @@
-import 'package:newsapp/src/models/video.dart';
+import '../models/video.dart';
 
 class VideosCat {
   String apiStatus;
@@ -11,7 +11,7 @@ class VideosCat {
     apiStatus = json['api_status'];
     apiVersion = json['api_version'];
     if (json['data'] != null) {
-      videos = new List<Video>();
+      videos = <Video>[];
       json['data'].forEach((v) {
         videos.add(new Video.fromJson(v));
       });

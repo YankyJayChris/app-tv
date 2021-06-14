@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
-import 'package:newsapp/src/models/check_payment.dart';
-import 'package:newsapp/src/repository/new_local.dart';
-import 'package:newsapp/src/repository/payment_repository.dart';
+import '../../../src/models/check_payment.dart';
+import '../../../src/repository/new_local.dart';
+import '../../../src/repository/payment_repository.dart';
 import 'bloc.dart';
 
 import 'package:http/http.dart' as http;
@@ -13,7 +13,8 @@ import 'package:rxdart/rxdart.dart';
 class PaymentsBloc extends Bloc<PaymentsEvent, PaymentState> {
   final http.Client httpClient;
   // LocalData prefs = LocalData();
-  LocalStorageService _localStorageService = LocalStorageService(localStorageRepository: LocalStorageRepository("prime.json"));
+  LocalStorageService _localStorageService = LocalStorageService(
+      localStorageRepository: LocalStorageRepository("prime.json"));
 
   PaymentsBloc({@required this.httpClient}) : super(PaymentInitial());
 
@@ -44,7 +45,8 @@ class PaymentsBloc extends Bloc<PaymentsEvent, PaymentState> {
       //   print(e);
       // });
       Future<String> paymentLocal = _localStorageService.getpayData();
-      paymentData = CheckPaymentRepo.fromJson(jsonDecode(paymentLocal.toString()));
+      paymentData =
+          CheckPaymentRepo.fromJson(jsonDecode(paymentLocal.toString()));
 
       if (paymentData.apiStatus == "200") {
         print(
@@ -66,7 +68,8 @@ class PaymentsBloc extends Bloc<PaymentsEvent, PaymentState> {
 
       if (paymentData.apiStatus == "200") {
         // prefs.setPayData(jsonEncode(paymentData));
-        await _localStorageService.savepayData(jsonEncode(paymentData.toString()));
+        await _localStorageService
+            .savepayData(jsonEncode(paymentData.toString()));
         print("=========  am here in Paymentbloc: " + jsonEncode(paymentData));
         // Future<String> paymentLocal = prefs.getuserData();
         // paymentLocal.then((data) {
@@ -75,7 +78,8 @@ class PaymentsBloc extends Bloc<PaymentsEvent, PaymentState> {
         //   print(e);
         // });
         Future<String> paymentLocal = _localStorageService.getpayData();
-        paymentData = CheckPaymentRepo.fromJson(jsonDecode(paymentLocal.toString()));
+        paymentData =
+            CheckPaymentRepo.fromJson(jsonDecode(paymentLocal.toString()));
         yield PaymentSuccess(payData: paymentData);
       } else {
         yield PaymentFailure(
@@ -87,20 +91,18 @@ class PaymentsBloc extends Bloc<PaymentsEvent, PaymentState> {
       yield PaymentLoading();
       // prefs.setPayData("");
       await _localStorageService.removeFromStorage("paydata");
-      yield PaymentFailure(
-            message: "Your current subscription has finished");
+      yield PaymentFailure(message: "Your current subscription has finished");
     }
 
     if (event is CheckPayStatus) {
-
       CheckPaymentRepo payData = await PaymentsRepository.checkPayment(
-        userId: event.userId,
-        s: event.s
-      );
-      print("==========> CheckPayStatus Paymentbloc ${payData.toString()}<===========");
+          userId: event.userId, s: event.s);
+      print(
+          "==========> CheckPayStatus Paymentbloc ${payData.toString()}<===========");
       if (payData.apiStatus == "200") {
         await _localStorageService.savepayData(jsonEncode(payData.toString()));
-        print("==========> we got data now Paymentbloc ${payData.toString()}<===========");
+        print(
+            "==========> we got data now Paymentbloc ${payData.toString()}<===========");
         yield PaymentSuccess(payData: payData);
       } else {
         print("==========> no data found <===========");

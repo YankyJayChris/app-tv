@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'package:newsapp/src/models/api_result_model.dart';
+import '../../../src/models/api_result_model.dart';
 
-import 'package:newsapp/src/models/article.dart';
-import 'package:newsapp/src/resources/strings.dart';
-import 'package:newsapp/src/ui/widgets/vertical_items.dart';
+import '../../../src/models/article.dart';
+import '../../../src/resources/strings.dart';
+import '../../../src/ui/widgets/vertical_items.dart';
 
 class CatBuilder extends StatelessWidget {
   final String catId;

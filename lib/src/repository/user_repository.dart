@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:newsapp/src/models/userRepo.dart';
-import 'package:newsapp/src/repository/local_data.dart';
-import 'package:newsapp/src/resources/strings.dart';
+import '../models/userRepo.dart';
+import '../repository/local_data.dart';
+import '../resources/strings.dart';
 
 class UserRepository {
   final FirebaseAuth _firebaseAuth;
@@ -56,13 +56,13 @@ class UserRepository {
     );
     if (res.statusCode == 200) {
       print("====== am here now we go =======");
-      LocalData prefs =  LocalData();
+      LocalData prefs = LocalData();
       var myRes = json.decode(res.body);
       UserRespoModel userData = UserRespoModel.fromJson(myRes);
-      if(userData.apiStatus == "200"){
+      if (userData.apiStatus == "200") {
         prefs.setAuthToken(jsonEncode(userData.data.sessionId));
         prefs.setuserData(jsonEncode(userData));
-      }else{
+      } else {
         prefs.setAuthToken("");
         prefs.setuserData("");
       }

@@ -3,18 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:overlay_support/overlay_support.dart';
 
-
-import 'package:newsapp/src/blocs/article/article_bloc.dart';
-import 'package:newsapp/src/blocs/article/article_event.dart';
-import 'package:newsapp/src/blocs/auth/bloc.dart';
-// import 'package:newsapp/src/blocs/Payment/bloc.dart';
-import 'package:newsapp/src/blocs/categories/bloc.dart';
-import 'package:newsapp/src/blocs/video/bloc.dart';
-import 'package:newsapp/src/utils/routes.dart';
-
+import 'src/blocs/article/article_bloc.dart';
+import 'src/blocs/article/article_event.dart';
+import 'src/blocs/auth/bloc.dart';
+// import 'src/blocs/Payment/bloc.dart';
+import 'src/blocs/categories/bloc.dart';
+import 'src/blocs/video_categories/bloc.dart';
+import 'src/blocs/video/bloc.dart';
+import 'src/utils/routes.dart';
 
 import 'src/blocs/payment/bloc.dart';
-
 
 void main() async {
   Bloc.observer = SimpleBlocObserver();
@@ -28,7 +26,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     super.initState();
@@ -46,6 +43,10 @@ class _MyAppState extends State<MyApp> {
           create: (context) =>
               CategoryBloc(httpClient: http.Client())..add(CategoriesFetched()),
         ),
+        BlocProvider<VidCategoryBloc>(
+          create: (context) => VidCategoryBloc(httpClient: http.Client())
+            ..add(VidCategoriesFetched()),
+        ),
         BlocProvider<VideoBloc>(
           create: (context) =>
               VideoBloc(httpClient: http.Client())..add(VideoFetched()),
@@ -59,14 +60,14 @@ class _MyAppState extends State<MyApp> {
               PaymentsBloc(httpClient: http.Client())..add(PaymentsStarted()),
         ),
       ],
-      child: OverlaySupport(
+      child: OverlaySupport.global(
         child: MaterialApp(
           title: 'TV1 PRIME',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primaryColor: Colors.purple[800],
             accentColor: Colors.purple[100],
-            primarySwatch: Colors.green,
+            primarySwatch: Colors.purple,
             iconTheme: IconThemeData(color: Colors.purple[800]),
           ),
           initialRoute: "/home",

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/categories/bloc.dart';
-import 'package:newsapp/src/models/category.dart';
-import 'package:newsapp/src/ui/pages/home_videos_page.dart';
-import 'package:newsapp/src/ui/widgets/videos_per_category.dart';
+import '../../../src/blocs/video_categories/bloc.dart';
+import '../../../src/models/category.dart';
+import '../../../src/ui/pages/home_videos_page.dart';
+import '../../../src/ui/widgets/videos_per_category.dart';
 
 class VideoPage extends StatefulWidget {
   VideoPage({Key key}) : super(key: key);
@@ -12,7 +12,7 @@ class VideoPage extends StatefulWidget {
   _VideoPageState createState() => _VideoPageState();
 }
 
-class _VideoPageState extends State<VideoPage> with SingleTickerProviderStateMixin {
+class _VideoPageState extends State<VideoPage> with TickerProviderStateMixin {
   TabController _tabController;
 
   @override
@@ -22,13 +22,13 @@ class _VideoPageState extends State<VideoPage> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    
     return Material(
       child: Scaffold(
-        body: BlocBuilder<CategoryBloc, CategoriesState>(
+        body: BlocBuilder<VidCategoryBloc, VidCategoriesState>(
           builder: (context, state) {
-            if (state is CategoriesSuccess) {
-              _tabController = new TabController(vsync: this, length: state.categories.length);
+            if (state is VidCategoriesSuccess) {
+              _tabController = new TabController(
+                  vsync: this, length: state.categories.length);
               _tabController.animateTo(0);
               return DefaultTabController(
                 length: state.categories.length,
@@ -85,25 +85,25 @@ class _VideoPageState extends State<VideoPage> with SingleTickerProviderStateMix
                               Row(
                                 children: <Widget>[
                                   GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, '/tv');
-                                  },
-                                  child: Icon(
-                                    Icons.live_tv,
-                                    color: Colors.black,
+                                    onTap: () {
+                                      Navigator.pushNamed(context, '/tv');
+                                    },
+                                    child: Icon(
+                                      Icons.live_tv,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 15),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, '/radio');
-                                  },
-                                  child: Icon(
-                                    Icons.radio,
-                                    color: Colors.black,
+                                  SizedBox(width: 15),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(context, '/radio');
+                                    },
+                                    child: Icon(
+                                      Icons.radio,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 15),
+                                  SizedBox(width: 15),
                                   // GestureDetector(
                                   //   onTap: () {
                                   //     Navigator.pushNamed(
@@ -180,7 +180,9 @@ class _VideoPageState extends State<VideoPage> with SingleTickerProviderStateMix
                         bottom: false,
                         child: (category.id == 0)
                             ? HomeBuilderVideoPage()
-                            : VideoCatBuilder(catId:category.langKey ,),
+                            : VideoCatBuilder(
+                                catId: category.langKey,
+                              ),
                       );
                     }).toList(),
                   ),
@@ -195,5 +197,4 @@ class _VideoPageState extends State<VideoPage> with SingleTickerProviderStateMix
       ),
     );
   }
-
 }

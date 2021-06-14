@@ -4,12 +4,12 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-import 'package:newsapp/src/blocs/article/bloc.dart';
-import 'package:newsapp/src/models/api_result_model.dart';
-import 'package:newsapp/src/models/article.dart';
+import '../../../src/blocs/article/bloc.dart';
+import '../../../src/models/api_result_model.dart';
+import '../../../src/models/article.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:newsapp/src/resources/strings.dart';
+import '../../../src/resources/strings.dart';
 
 class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
   final http.Client httpClient;

@@ -3,14 +3,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:newsapp/src/blocs/auth/bloc.dart';
-import 'package:newsapp/src/blocs/payment/bloc.dart';
-import 'package:newsapp/src/models/check_payment.dart';
-import 'package:newsapp/src/models/momo_results.dart';
-import 'package:newsapp/src/models/session_data.dart';
-import 'package:newsapp/src/repository/local_data.dart';
-import 'package:newsapp/src/repository/payment_repository.dart';
-import 'package:newsapp/src/ui/widgets/inputPhone.dart';
+import '../../../src/blocs/auth/bloc.dart';
+import '../../../src/blocs/payment/bloc.dart';
+import '../../../src/models/check_payment.dart';
+import '../../../src/models/momo_results.dart';
+import '../../../src/models/session_data.dart';
+import '../../../src/repository/local_data.dart';
+import '../../../src/repository/payment_repository.dart';
+import '../../../src/ui/widgets/inputPhone.dart';
 
 class MomoNumber extends StatefulWidget {
   final String plan;

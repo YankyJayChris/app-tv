@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 
-import 'package:newsapp/src/models/video.dart';
-import 'package:newsapp/src/models/video_cat.dart';
-import 'package:newsapp/src/resources/strings.dart';
-import 'package:newsapp/src/ui/widgets/bottom_loder.dart';
-import 'package:newsapp/src/ui/widgets/video_card_col.dart';
-import 'package:newsapp/src/ui/widgets/video_row_card.dart';
+import '../../../src/models/video.dart';
+import '../../../src/models/video_cat.dart';
+import '../../../src/resources/strings.dart';
+import '../../../src/ui/widgets/bottom_loder.dart';
+import '../../../src/ui/widgets/video_card_col.dart';
+import '../../../src/ui/widgets/video_row_card.dart';
 
 class VideoCatBuilder extends StatelessWidget {
   final String catId;
@@ -31,7 +31,7 @@ class VideoCatBuilder extends StatelessWidget {
       print(data);
       return videos;
     } else {
-      throw Exception('error fetching articles');
+      throw Exception('error fetching Videos');
     }
   }
 

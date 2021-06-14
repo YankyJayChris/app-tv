@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
-import 'package:newsapp/src/models/userRepo.dart';
-import 'package:newsapp/src/repository/local_data.dart';
-import 'package:newsapp/src/repository/user_repository.dart';
+import '../../../src/models/userRepo.dart';
+import '../../../src/repository/local_data.dart';
+import '../../../src/repository/user_repository.dart';
 import './bloc.dart';
 
 import 'package:http/http.dart' as http;
@@ -38,7 +38,8 @@ class AuthenticationBloc
       UserRespoModel userData;
       Future<String> userLocal = prefs.getuserData();
       userLocal.then((data) {
-        print("***************this the data i have******************" + data.toString());
+        print("***************this the data i have******************" +
+            data.toString());
         userData = UserRespoModel.fromJson(jsonDecode(data.toString()));
       }, onError: (e) {
         print(e);

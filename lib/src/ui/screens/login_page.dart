@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:newsapp/src/blocs/login/bloc.dart';
-import 'package:newsapp/src/repository/user_repository.dart';
+import '../../../src/blocs/login/bloc.dart';
+import '../../../src/repository/user_repository.dart';
 
 class MyLoginPage extends StatelessWidget {
   UserRepository userRepository;
@@ -32,7 +32,6 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController phoneController = TextEditingController();
 
   String _selected = "+250";
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   LoginBloc loginBloc;
 
@@ -243,5 +242,4 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ));
   }
-
 }

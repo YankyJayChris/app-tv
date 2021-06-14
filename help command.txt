@@ -1,0 +1,7 @@
+generate sha1 key
+>> cd android
+>> ./gradlew signingReport
+
+
+password
+>> 1981412knc

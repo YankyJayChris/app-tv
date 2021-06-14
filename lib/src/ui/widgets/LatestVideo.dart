@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:newsapp/src/ui/widgets/video_card_col.dart';
+import '../../../src/ui/widgets/video_card_col.dart';
 
 class LatestVideoWidget extends StatelessWidget {
   final data;

@@ -8,25 +8,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:get_ip/get_ip.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_app_update/in_app_update.dart';
 
-import 'package:newsapp/src/blocs/auth/bloc.dart';
-import 'package:newsapp/src/blocs/categories/bloc.dart';
-import 'package:newsapp/src/blocs/payment/bloc.dart';
-import 'package:newsapp/src/blocs/video/bloc.dart';
-import 'package:newsapp/src/models/userRepo.dart';
-import 'package:newsapp/src/models/video.dart';
-import 'package:newsapp/src/repository/local_data.dart';
-import 'package:newsapp/src/resources/strings.dart';
+import '../blocs/auth/bloc.dart';
+import '../blocs/categories/bloc.dart';
+import '../blocs/payment/bloc.dart';
+import '../blocs/video/bloc.dart';
+import '../models/userRepo.dart';
+import '../models/video.dart';
+import '../repository/local_data.dart';
+import '../resources/strings.dart';
 
-import 'package:newsapp/src/ui/pages/home_page.dart';
-import 'package:newsapp/src/ui/pages/news_page.dart';
-import 'package:newsapp/src/ui/pages/profile_page.dart';
-import 'package:newsapp/src/ui/pages/search_page.dart';
-import 'package:newsapp/src/ui/pages/video_page.dart';
+import '../ui/pages/home_page.dart';
+import '../ui/pages/news_page.dart';
+import '../ui/pages/profile_page.dart';
+import '../ui/pages/search_page.dart';
+import '../ui/pages/video_page.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 class TabScreen extends StatefulWidget {
@@ -107,7 +106,9 @@ class TabScreenState extends State<TabScreen> {
     }
     _checkLogin();
     _saveDeviceToken();
-    checkForUpdate();
+    if (Platform.isAndroid) {
+      checkForUpdate();
+    }
     // _refreshPaymentPage();
     currentPage = pages[widget.tabIndex];
     currentTab = widget.tabIndex;
@@ -140,7 +141,6 @@ class TabScreenState extends State<TabScreen> {
         print("onMessage: $post");
         _showNotification(message['notification']['title'],
             message['notification']['body'], view, post);
-        _addBadge();
       },
       onLaunch: (Map<String, dynamic> message) async {
         print('onLaunch: $message');
@@ -171,6 +171,12 @@ class TabScreenState extends State<TabScreen> {
             if (view == 'article') {
               OverlaySupportEntry.of(context).dismiss();
               Navigator.pushNamed(context, '/articledetail', arguments: post);
+            }
+            if (view == 'live') {
+              Navigator.pushNamed(
+                context,
+                '/live',
+              );
             }
           },
           child: Card(
@@ -235,6 +241,12 @@ class TabScreenState extends State<TabScreen> {
       if (view == 'article') {
         Navigator.pushNamed(context, '/articledetail', arguments: post);
       }
+      if (view == 'live') {
+        Navigator.pushNamed(
+          context,
+          '/live',
+        );
+      }
       // If there's no view it'll just open the app on the first view
     }
   }
@@ -260,23 +272,6 @@ class TabScreenState extends State<TabScreen> {
     });
   }
 
-  void _addBadge() {
-    Future<int> noNum = prefs.getsubNotNumber();
-    int number = 0;
-    noNum.then((data) {
-      number = data + 1;
-    });
-    if (number > 0) {
-      prefs.setsubNotNumber(number);
-      FlutterAppBadger.updateBadgeCount(number);
-      print(_appBadgeSupported);
-    }
-  }
-
-  void _removeBadge() {
-    FlutterAppBadger.removeBadge();
-  }
-
   _checkLogin() {
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     Future<String> userLocal = prefs.getuserData();
@@ -299,7 +294,7 @@ class TabScreenState extends State<TabScreen> {
       setState(() {
         _updateInfo = info;
       });
-      if(_updateInfo?.updateAvailable == true){
+      if (_updateInfo?.updateAvailable == true) {
         InAppUpdate.performImmediateUpdate().catchError((e) => _showError(e));
       }
     }).catchError((e) => _showError(e));
@@ -328,8 +323,9 @@ class TabScreenState extends State<TabScreen> {
       key: _scaffoldKey,
       body: currentPage,
       bottomNavigationBar: BottomNavigationBar(
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
+          showSelectedLabels: true,
+          unselectedItemColor: Colors.blueGrey,
+          showUnselectedLabels: true,
           onTap: onTabTapped,
           currentIndex: currentTab,
           fixedColor: Colors.purple[800],
@@ -340,7 +336,7 @@ class TabScreenState extends State<TabScreen> {
                 color: currentTab == 0 ? Colors.purple[800] : Colors.black,
                 size: 23.0,
               ),
-              title: currentTab == 0 ? Text('Home') : Text('Home'),
+              label: 'Home',
             ),
             BottomNavigationBarItem(
               icon: Icon(
@@ -348,7 +344,7 @@ class TabScreenState extends State<TabScreen> {
                 color: currentTab == 1 ? Colors.purple[800] : Colors.black,
                 size: 23.0,
               ),
-              title: Text(''),
+              label: 'Search',
             ),
             BottomNavigationBarItem(
               icon: Icon(
@@ -356,7 +352,7 @@ class TabScreenState extends State<TabScreen> {
                 color: currentTab == 2 ? Colors.purple[800] : Colors.black,
                 size: 23.0,
               ),
-              title: Text(''),
+              label: 'News',
             ),
             BottomNavigationBarItem(
               icon: Icon(
@@ -364,7 +360,7 @@ class TabScreenState extends State<TabScreen> {
                 color: currentTab == 3 ? Colors.purple[800] : Colors.black,
                 size: 23.0,
               ),
-              title: Text(''),
+              label: 'Video',
             ),
             BottomNavigationBarItem(
               icon: Icon(
@@ -372,7 +368,7 @@ class TabScreenState extends State<TabScreen> {
                 color: currentTab == 4 ? Colors.purple[800] : Colors.black,
                 size: 23.0,
               ),
-              title: Text(''),
+              label: 'Acount',
             )
           ]),
     );

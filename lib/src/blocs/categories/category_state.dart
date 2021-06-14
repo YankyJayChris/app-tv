@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:newsapp/src/models/article.dart';
-import 'package:newsapp/src/models/category.dart';
-
+import '../../../src/models/article.dart';
+import '../../../src/models/category.dart';
 
 abstract class CategoriesState extends Equatable {
   const CategoriesState();
@@ -33,6 +32,5 @@ class CategoriesSuccess extends CategoriesState {
   List<Object> get props => [categories];
 
   @override
-  String toString() =>
-      'PostLoaded { categories: ${categories.length},}';
+  String toString() => 'PostLoaded { categories: ${categories.length},}';
 }

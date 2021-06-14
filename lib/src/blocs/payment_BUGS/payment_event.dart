@@ -1,6 +1,6 @@
 // // import 'package:equatable/equatable.dart';
 // // import 'package:meta/meta.dart';
-// // import 'package:newsapp/src/models/check_payment.dart';
+// // import '../../../src/models/check_payment.dart';
 
 // //   @immutable
 // //   abstract class PaymentEvent extends Equatable {
@@ -69,7 +69,7 @@
 
 // import 'package:equatable/equatable.dart';
 // import 'package:meta/meta.dart';
-// import 'package:newsapp/src/models/check_payment.dart';
+// import '../../../src/models/check_payment.dart';
 
 //   @immutable
 //   abstract class PaymentEvent extends Equatable {

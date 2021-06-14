@@ -6,11 +6,11 @@ import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:newsapp/src/blocs/video/bloc.dart';
-import 'package:newsapp/src/blocs/video/video_event.dart';
-import 'package:newsapp/src/models/video.dart';
-import 'package:newsapp/src/models/all_video_result.dart';
-import 'package:newsapp/src/resources/strings.dart';
+import '../../../src/blocs/video/bloc.dart';
+import '../../../src/blocs/video/video_event.dart';
+import '../../../src/models/video.dart';
+import '../../../src/models/all_video_result.dart';
+import '../../../src/resources/strings.dart';
 
 class VideoBloc extends Bloc<VideoEvent, VideoState> {
   final http.Client httpClient;

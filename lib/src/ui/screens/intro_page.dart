@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/src/models/slider_model.dart';
-import 'package:newsapp/src/repository/local_data.dart';
+import '../../../src/models/slider_model.dart';
+import '../../../src/repository/local_data.dart';
 
 class IntroPage extends StatefulWidget {
   @override

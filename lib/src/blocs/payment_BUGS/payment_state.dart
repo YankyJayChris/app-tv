@@ -1,5 +1,5 @@
 // import 'package:equatable/equatable.dart';
-// import 'package:newsapp/src/models/check_payment.dart';
+// import '../../../src/models/check_payment.dart';
 
 
 // abstract class PaymentState extends Equatable {
